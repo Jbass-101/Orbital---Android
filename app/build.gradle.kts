@@ -69,15 +69,17 @@ dependencies {
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization)
 
+    testImplementation(libs.ktor.client.content.negotiation)
+    testImplementation(libs.ktor.server.test)
+
     //Coroutines
     implementation(libs.kotlinx.coroutines)
+
+    testImplementation(libs.kotlinx.coroutines.test)
 
     //Hilt-Dagger
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-
-    //Json Serialization
-    implementation(libs.json.serialization)
 
     //Hilt-Dagger-Unit-Test
     testImplementation(libs.hilt.android.testing)
@@ -87,7 +89,8 @@ dependencies {
     androidTestImplementation(libs.hilt.android.testing)
     kspAndroidTest(libs.hilt.compiler)
 
-
+    //Json Serialization
+    implementation(libs.json.serialization)
 
     //Android Default test
     testImplementation(libs.junit)

@@ -38,9 +38,12 @@ ktor-client-okhttp = {group ="io.ktor", name = "ktor-client-okhttp"}
 ktor-client-websockets = {group ="io.ktor", name = "ktor-client-websockets"}
 ktor-client-content-negotiation = {group ="io.ktor", name = "ktor-client-content-negotiation"}
 ktor-serialization= {group ="io.ktor", name = "ktor-serialization-kotlinx-json"}
+ktor-server-test= {group ="io.ktor", name = "ktor-server-test-host"}
+
 
 #Coroutine
 kotlinx-coroutines= {group ="org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines"}
+kotlinx-coroutines-test= {group ="org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines"}
 
 #Hilt-Dagger
 hilt-android = {group ="com.google.dagger", name = "hilt-android", version.ref = "hilt-dagger"}
