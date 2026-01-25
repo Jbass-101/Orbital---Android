@@ -1,7 +1,11 @@
+import org.jetbrains.kotlin.gradle.tasks.Kapt
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.ksp)
+
 }
 
 android {
@@ -66,6 +70,19 @@ dependencies {
 
     //Coroutines
     implementation(libs.kotlinx.coroutines)
+
+    //Hilt-Dagger
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+
+    //Hilt-Dagger-Unit-Test
+    testImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.compiler)
+
+    //Hilt-Instrumental-test
+    androidTestImplementation(libs.hilt.android.testing)
+    kspAndroidTest(libs.hilt.compiler)
+
 
 
     //Android Default test

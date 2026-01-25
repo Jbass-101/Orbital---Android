@@ -10,6 +10,8 @@ activityCompose = "1.12.2"
 composeBom = "2026.01.00"
 ktorBom = "3.4.0"
 kotlinxCoroutines = "1.10.2"
+kotlin-ksp ="2.3.3"
+hilt-dagger = "2.59"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -38,9 +40,15 @@ ktor-serialization= {group ="io.ktor", name = "ktor-serialization-kotlinx-json"}
 #Coroutine
 kotlinx-coroutines= {group ="org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines"}
 
+#Hilt-Dagger
+hilt-android = {group ="com.google.dagger", name = "hilt-android", version.ref = "hilt-dagger"}
+hilt-compiler = {group ="com.google.dagger", name = "hilt-compiler", version.ref = "hilt-dagger"}
+hilt-android-testing = {group ="com.google.dagger", name = "hilt-android-testing", version.ref = "hilt-dagger"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+#Kotlin-Ksp
+kotlin-ksp = {id = "com.google.devtools.ksp", version.ref="kotlin-ksp"}
 
