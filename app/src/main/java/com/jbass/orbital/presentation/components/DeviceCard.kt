@@ -43,7 +43,6 @@ fun DeviceCard(
     onValueChange: (Float) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // 1. Determine "Active" state for coloring
     val isActive = when (val s = device.state) {
         is DeviceState.OnOff -> s.isOn
         is DeviceState.Level -> s.value > 0
@@ -51,42 +50,57 @@ fun DeviceCard(
         else -> false
     }
 
-    // 2. Animations
     val cardColor by animateColorAsState(
-        targetValue = if (isActive) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant,
+        targetValue = if (isActive)
+            MaterialTheme.colorScheme.primaryContainer
+        else
+            MaterialTheme.colorScheme.surface,
         label = "cardBg"
     )
-    val iconColor by animateColorAsState(
-        targetValue = if (isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-        label = "iconTint"
+
+    val contentColor by animateColorAsState(
+        targetValue = if (isActive)
+            MaterialTheme.colorScheme.onPrimaryContainer
+        else
+            MaterialTheme.colorScheme.onSurface,
+        label = "contentColor"
     )
 
     Column(
         modifier = modifier
-            .aspectRatio(1f) // Square Shape
-            .clip(RoundedCornerShape(24.dp))
+            .aspectRatio(1f)
+            .clip(RoundedCornerShape(28.dp))
             .background(cardColor)
-            .clickable { onToggle() }
-            .padding(16.dp),
+            .clickable(onClick = onToggle)
+            .padding(18.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        // --- Header: Icon ---
+
+        // ─── Header ───────────────────────────────
         Box(
             modifier = Modifier
-                .size(36.dp)
-                .background(Color.White.copy(alpha = 0.5f), CircleShape),
+                .size(44.dp)
+                .clip(CircleShape)
+                .background(
+                    if (isActive)
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+                    else
+                        MaterialTheme.colorScheme.surfaceVariant
+                ),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 painter = painterResource(getIconForDevice(device.type)),
                 contentDescription = null,
-                tint = iconColor,
-                modifier = Modifier.size(20.dp)
+                tint = if (isActive)
+                    MaterialTheme.colorScheme.primary
+                else
+                    MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(22.dp)
             )
         }
 
-        // --- Body: Controls (Polymorphic) ---
-        // Only show Sliders for Dimmers/Media
+        // ─── Middle Content ───────────────────────
         when (val state = device.state) {
             is DeviceState.Level -> {
                 Slider(
@@ -94,39 +108,46 @@ fun DeviceCard(
                     onValueChange = onValueChange,
                     valueRange = 0f..100f,
                     colors = SliderDefaults.colors(
-                        thumbColor = Color.White,
-                        activeTrackColor = iconColor
-                    ),
-                    modifier = Modifier.height(20.dp)
+                        thumbColor = MaterialTheme.colorScheme.primary,
+                        activeTrackColor = MaterialTheme.colorScheme.primary,
+                        inactiveTrackColor = MaterialTheme.colorScheme.surfaceVariant
+                    )
                 )
             }
+
             is DeviceState.Temperature -> {
                 Text(
                     text = "${state.current}°C",
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = iconColor
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = contentColor
                 )
             }
-            else -> Spacer(Modifier.height(8.dp))
+
+            else -> Spacer(Modifier.height(12.dp))
         }
 
-        // --- Footer: Name & Status ---
+        // ─── Footer ───────────────────────────────
         Column {
             Text(
                 text = device.name,
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold,
-                color = if (isActive) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = contentColor,
                 maxLines = 1
             )
+
+            Spacer(Modifier.height(2.dp))
+
             Text(
                 text = getStatusText(device),
-                style = MaterialTheme.typography.labelSmall,
-                color = if (isActive) MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant
+                style = MaterialTheme.typography.labelMedium,
+                color = contentColor.copy(alpha = 0.7f)
             )
         }
     }
 }
+
 
 // Helper: Map Backend Enum to UI Icon
 private fun getIconForDevice(type: DeviceType): Int {
