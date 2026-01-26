@@ -43,20 +43,7 @@ class RealTimeClientTest {
                 routing {
                     webSocket("/orbital/device") {
                         // Create dummy data
-                        val mockDevice = SmartDevice(
-                            id = "light-1",
-                            name = "Test Light",
-                            type = DeviceType.DIMMER,
-                            state = DeviceState.OnOff(true),
-                            zoneId = "z1",
-                            metadata = DeviceMetadata(
-                                "Test",
-                                "Model",
-                                "1.0",
-                                isReachable = true,
-                                lastSeenEpochMs = 0
-                            )
-                        )
+                        val mockDevice =
 
                         // Send Update
                         val msg = ServerMessage.StateUpdate(listOf(mockDevice))
