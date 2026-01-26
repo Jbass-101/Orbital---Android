@@ -39,6 +39,8 @@ ktor-client-websockets = {group ="io.ktor", name = "ktor-client-websockets"}
 ktor-client-content-negotiation = {group ="io.ktor", name = "ktor-client-content-negotiation"}
 ktor-serialization= {group ="io.ktor", name = "ktor-serialization-kotlinx-json"}
 ktor-server-test= {group ="io.ktor", name = "ktor-server-test-host"}
+ktor-server-websockets= {group ="io.ktor", name = "ktor-server-websocketst"}
+
 
 
 #Coroutine
