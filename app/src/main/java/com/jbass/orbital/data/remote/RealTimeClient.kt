@@ -75,7 +75,7 @@ class RealTimeClient(
      * Opens the WebSocket connection and listens for incoming messages.
      * This function suspends until the connection is closed.
      */
-    suspend fun connect(serverUrl: String) {
+    fun connect(serverUrl: String) {
         if(reconnectJob?.isActive == true) return // we are already trying to reconnect
 
         shouldReconnect = true
