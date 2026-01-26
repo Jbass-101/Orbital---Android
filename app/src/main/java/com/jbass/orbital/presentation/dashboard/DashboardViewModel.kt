@@ -11,67 +11,49 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
 
-data class DashboardUiState(
-    val devices: List<SmartDevice> = emptyList(),
-    val connectionState: ConnectionState = ConnectionState.Disconnected,
-    val isLoading: Boolean = true
-)
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
     private val repository: RealTimeClientRepository
 ) : ViewModel() {
 
-    // 1. UI State: Combines multiple flows into one "Source of Truth"
     private val _uiState = MutableStateFlow(DashboardUiState())
-    val uiState: StateFlow<DashboardUiState> = _uiState.asStateFlow()
+    val uiState = _uiState.asStateFlow()
 
-    // 2. One-Time Events: For errors that should only show once (Snackbar)
-    private val _errorChannel = Channel<String>()
-    val errorEvents = _errorChannel.receiveAsFlow()
+    // One-time events (Snackbars, Navigation)
+    private val _uiEvent = Channel<UiEvent>()
+    val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
-        // Start listening to the Repository
-        observeRepository()
+        // 1. Connect on startup (using Emulator IP for now)
+        connect("ws://10.0.2.2:8080/orbital/device")
 
-        // Connect to the server
-        // (In a real app, you might get the URL from User Preferences)
-        connectToSpace("ws://10.0.2.2:8080/orbital/device")
-    }
-
-    private fun observeRepository() {
+        // 2. Combine Repository Flows into UI State
         viewModelScope.launch {
-            // Combine flows to update UI state safely
             combine(
                 repository.deviceState,
                 repository.connectionState
-            ) { devices, connection ->
+            ) { devices, connState ->
                 DashboardUiState(
-                    devices = devices,
-                    connectionState = connection,
-                    isLoading = connection is ConnectionState.Connecting
+                    // Sort by Zone so the grid looks organized
+                    devices = devices.sortedBy { it.zoneId },
+                    connectionState = connState
                 )
-            }.collect { newState ->
-                _uiState.value = newState
-            }
+            }.collect { _uiState.value = it }
         }
-
-        // Listen for Backend Errors (e.g. "Device Offline")
+        // 3. Listen for Backend Errors
         viewModelScope.launch {
             repository.uiErrors.collect { error ->
-                val message = when (error) {
-                    is UiError.CommandRejected -> error.message
-                    is UiError.ConnectionError -> "Connection Lost: ${error.message}"
+                val msg = when (error) {
+                    is UiError.CommandRejected -> "Action Failed: ${error.message}"
+                    is UiError.ConnectionError -> "Connection Lost"
                     is UiError.ParsingError -> "Data Error"
                 }
-                _errorChannel.send(message)
+                _uiEvent.send(UiEvent.ShowSnackbar(msg))
             }
         }
     }
-
-    fun connectToSpace(url: String) {
-        repository.connect(url)
-    }
+    fun connect(url: String) = repository.connect(url)
 
     /**
      * Handles the complex logic of "Toggling" different device types.
@@ -120,4 +102,9 @@ class DashboardViewModel @Inject constructor(
             repository.disconnect()
         }
     }
+}
+
+//To Show SnackBar
+sealed interface UiEvent {
+    data class ShowSnackbar(val message: String) : UiEvent
 }
