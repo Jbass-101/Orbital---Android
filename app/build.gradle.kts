@@ -69,9 +69,12 @@ dependencies {
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization)
 
-    testImplementation(libs.ktor.client.content.negotiation)
     testImplementation(libs.ktor.server.test)
     testImplementation(libs.ktor.server.websockets)
+    testImplementation(libs.ktor.server.content.negotiation)
+    testImplementation(libs.ktor.serialization)
+    testImplementation(libs.ktor.client.websockets)
+    testImplementation(libs.ktor.client.content.negotiation)
 
     //Coroutines
     implementation(libs.kotlinx.coroutines)
