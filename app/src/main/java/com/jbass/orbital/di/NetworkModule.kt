@@ -1,18 +1,17 @@
 package com.jbass.orbital.di
 
 
-import com.jbass.orbital.data.remote.RealTimeClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import io.ktor.client.*
-import io.ktor.client.engine.okhttp.*
-import io.ktor.client.plugins.websocket.*
-import io.ktor.serialization.kotlinx.*
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.websocket.WebSockets
+import io.ktor.client.plugins.websocket.pingInterval
+import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import kotlinx.serialization.json.Json
 import javax.inject.Singleton
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 @Module
@@ -28,14 +27,9 @@ object NetworkModule {
                 pingInterval =  20_000.milliseconds
                 contentConverter = KotlinxWebsocketSerializationConverter(Json {
                     ignoreUnknownKeys = true
+                    classDiscriminator = "classType" //->Same a Backend
                 })
             }
         }
-    }
-
-    @Provides
-    @Singleton
-    fun provideRealTimeClient(client: HttpClient): RealTimeClient {
-        return RealTimeClient(client)
     }
 }
