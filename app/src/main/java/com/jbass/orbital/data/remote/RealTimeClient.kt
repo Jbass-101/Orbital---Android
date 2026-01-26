@@ -2,32 +2,60 @@ package com.jbass.orbital.data.remote
 
 import android.util.Log
 import com.jbass.orbital.domain.model.ClientMessage
+import com.jbass.orbital.domain.model.ConnectionState
 import com.jbass.orbital.domain.model.ServerMessage
 import com.jbass.orbital.domain.model.SmartDevice
+import com.jbass.orbital.domain.model.UiError
 import io.ktor.client.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.websocket.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.serialization.json.Json
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
+import kotlin.math.min
 
 /**
  * Manages the persistent WebSocket connection.
  * Acts as the bridge between the Ktor Backend and the Android UI.
  */
 class RealTimeClient(
-    private val client: HttpClient
+    private val client: HttpClient,
+    private val scope: CoroutineScope
 ) {
-    // 1. The Output: A hot stream of the current device list.
+
+    /* ----------------------------
+     * UI State
+     * ---------------------------- */
+
+    //The Output: A hot stream of the current device list.
     private val _deviceState = MutableStateFlow<List<SmartDevice>>(emptyList())
     val deviceState: StateFlow<List<SmartDevice>> = _deviceState.asStateFlow()
 
-    // 2. Connection Status
-    private val _connectionStatus = MutableStateFlow(false)
-    val connectionStatus: StateFlow<Boolean> = _connectionStatus.asStateFlow()
+    //Connection Status
+    private val _connectionStatus = MutableStateFlow<ConnectionState>(ConnectionState.Disconnected)
+    val connectionStatus: StateFlow<ConnectionState> = _connectionStatus.asStateFlow()
 
-    // 3. The Active Session (Crucial for sending commands)
+    //SharedFlow for UI errors
+    private val _uiErrors = MutableSharedFlow<UiError>(
+        replay = 0,
+        extraBufferCapacity = 1
+    )
+    val uiErrors: SharedFlow<UiError> = _uiErrors.asSharedFlow()
+
+    /* ----------------------------
+     * Internal
+     * ---------------------------- */
+
+    // The Active Session
     private var session: DefaultClientWebSocketSession? = null
+    // attempts reconnection
+    private var reconnectJob: Job? = null
+    private var shouldReconnect = true
 
     // Shared JSON config
     private val jsonConfig = Json {
@@ -35,41 +63,49 @@ class RealTimeClient(
         isLenient = true
         ignoreUnknownKeys = true
         encodeDefaults = true
+        classDiscriminator = "classType" //->Same a Backend
     }
+
+
+    /* ----------------------------
+     * Public API
+     * ---------------------------- */
 
     /**
      * Opens the WebSocket connection and listens for incoming messages.
      * This function suspends until the connection is closed.
      */
     suspend fun connect(serverUrl: String) {
-        try {
-            client.webSocket(serverUrl) {
-                // Capture the session so sendCommand can use it
-                session = this
-                _connectionStatus.value = true
-                Log.d("RealTimeClient", "Connected to Smart Space Server")
+        if(reconnectJob?.isActive == true) return // we are already trying to reconnect
 
+        shouldReconnect = true
+
+        reconnectJob = scope.launch {
+            var attempt = 0
+
+            _connectionStatus.value = ConnectionState.Connecting
+
+            while (isActive && shouldReconnect){
                 try {
-                    // Listen Loop
-                    for (frame in incoming) {
-                        if (frame is Frame.Text) {
-                            val text = frame.readText()
-                            handleIncomingMessage(text)
-                        }
-                    }
-                } catch (e: Exception) {
-                    Log.e("RealTimeClient", "Error reading frame", e)
-                } finally {
-                    // Cleanup when connection closes
-                    _connectionStatus.value = false
-                    session = null
-                    Log.d("RealTimeClient", "Disconnected")
+                    openSocket(serverUrl)
+                    attempt = 0 //connected
+                } catch (e: Exception){
+                    attempt++ //Connection attempt
+
+                    if(!shouldReconnect) break
+
+                    _connectionStatus.value = ConnectionState.Reconnecting(attempt)
+
+                    _uiErrors.tryEmit(
+                        UiError.ConnectionError(
+                            "Connection lost. Reconnecting"
+                        ))
+
+                    delay(calculateBackoff(attempt))
+
                 }
             }
-        } catch (e: Exception) {
-            Log.e("RealTimeClient", "Failed to connect", e)
-            _connectionStatus.value = false
-            session = null
+            _connectionStatus.value = ConnectionState.Disconnected
         }
     }
 
@@ -81,17 +117,24 @@ class RealTimeClient(
         val currentSession = session
 
         if (currentSession == null || !currentSession.isActive) {
-            Log.e("RealTimeClient", "Cannot send command: No active connection")
+            _uiErrors.tryEmit(
+                UiError.ConnectionError(
+                    "Not connected to server"
+                ))
             return
         }
 
         try {
             // Polymorphic serialization requires the serializer argument
-            val json = jsonConfig.encodeToString(ClientMessage.serializer(), command)
+            val json = jsonConfig.encodeToString<ClientMessage>( command)
             currentSession.send(Frame.Text(json))
             Log.d("RealTimeClient", "Sent command: $json")
         } catch (e: Exception) {
-            Log.e("RealTimeClient", "Failed to send command", e)
+            _uiErrors.tryEmit(
+                UiError.CommandRejected(
+                    e.message,
+                    "Failed to send command"
+                ))
         }
     }
 
@@ -102,6 +145,37 @@ class RealTimeClient(
         session?.close()
         session = null
     }
+
+
+    /* ----------------------------
+     * WebSocket
+     * ---------------------------- */
+
+    private suspend fun openSocket(serverUrl: String){
+        client.webSocket(serverUrl){
+            session = this
+            _connectionStatus.value = ConnectionState.Connected
+            Log.d("RealTimeClient", "Connected, Yay!")
+
+            try {
+                for (frame in incoming){
+                    if (frame is Frame.Text){
+                        handleIncomingMessage(frame.readText())
+                    }
+                }
+
+            }finally {
+                cleanupSession()
+                throw CancellationException("WebSocket closed")
+
+            }
+        }
+    }
+
+
+    /* ----------------------------
+     * Message Handling
+     * ---------------------------- */
 
     private fun handleIncomingMessage(jsonString: String) {
         try {
@@ -115,12 +189,35 @@ class RealTimeClient(
                 is ServerMessage.CommandAck -> {
                     if (!message.success) {
                         Log.w("RealTimeClient", "Command Rejected: ${message.errorCode}")
-                        // TODO: Emit to a SharedFlow<String> for UI Error Snackbars
+                        _uiErrors.tryEmit(
+                            UiError.CommandRejected(
+                                errorCode = message.message,
+                                message = "Command Rejected by Server"
+                            )
+                        )
                     }
                 }
             }
         } catch (e: Exception) {
             Log.e("RealTimeClient", "Failed to parse incoming message: $jsonString", e)
+            _uiErrors.tryEmit(
+                UiError.ParsingError("Failed to parse incoming message")
+            )
         }
+    }
+
+    /* ----------------------------
+     * Helpers
+     * ---------------------------- */
+
+    private fun cleanupSession() {
+        session = null
+        Log.d("RealTimeClient", "Disconnected")
+    }
+
+    private fun calculateBackoff(attempt: Int): Long {
+        val baseDelay = 1_000L
+        val maxDelay = 30_000L
+        return min(baseDelay * (1 shl (attempt - 1)), maxDelay)
     }
 }
