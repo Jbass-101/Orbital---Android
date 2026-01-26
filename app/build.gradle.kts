@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.dagger.hilt)
 
 }
 
@@ -84,6 +85,9 @@ dependencies {
     //Hilt-Dagger
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+
+    //For HiltViewmodel
+    implementation(libs.navigation.compose)
 
     //Hilt-Dagger-Unit-Test
     testImplementation(libs.hilt.android.testing)
