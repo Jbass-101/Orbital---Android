@@ -26,7 +26,7 @@ class DashboardViewModel @Inject constructor(
 
     init {
         // 1. Connect on startup (using Emulator IP for now)
-        connect("ws://10.0.2.2:8080/orbital/device")
+        connect("ws://192.168.0.152:9090//device")
 
         // 2. Combine Repository Flows into UI State
         viewModelScope.launch {
