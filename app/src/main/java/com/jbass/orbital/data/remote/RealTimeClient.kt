@@ -32,9 +32,10 @@ class RealTimeClient(
      * UI State
      * ---------------------------- */
 
+    private val _deviceCache = mutableMapOf<String, SmartDevice>()
     //The Output: A hot stream of the current device list.
-    private val _deviceState = MutableStateFlow<List<SmartDevice>>(emptyList())
-    val deviceState: StateFlow<List<SmartDevice>> = _deviceState.asStateFlow()
+    private val _cachedDeviceState = MutableStateFlow<List<SmartDevice>>(emptyList())
+    val deviceState: StateFlow<List<SmartDevice>> = _cachedDeviceState.asStateFlow()
 
     //Connection Status
     private val _connectionStatus = MutableStateFlow<ConnectionState>(ConnectionState.Disconnected)
@@ -182,9 +183,22 @@ class RealTimeClient(
             val message = jsonConfig.decodeFromString<ServerMessage>(jsonString)
 
             when (message) {
-                is ServerMessage.StateUpdate -> {
-                    _deviceState.value = message.devices
+                is ServerMessage.FullStateUpdate -> {
+                    _deviceCache.clear()
+                    message.devices.forEach { device ->
+                        _deviceCache[device.id] = device
+                    }
+                    _cachedDeviceState.value = _deviceCache.values.toList()
+
                     Log.v("RealTimeClient", "State updated: ${message.devices.size} devices")
+                }
+                is ServerMessage.DeltaStateUpdate -> {
+                    message.devices.forEach { device ->
+                        _deviceCache[device.id] = device
+                    }
+
+                    _cachedDeviceState.value = _deviceCache.values.toList()
+
                 }
                 is ServerMessage.CommandAck -> {
                     if (!message.success) {

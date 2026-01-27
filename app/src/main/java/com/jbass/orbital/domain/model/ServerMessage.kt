@@ -27,7 +27,13 @@ sealed class ServerMessage {
      * Broadcast: Used to update the UI when a device changes state.
      */
     @Serializable
-    data class StateUpdate(
+    data class FullStateUpdate(
+        val devices: List<SmartDevice>
+    ) : ServerMessage()
+
+
+    @Serializable
+    data class DeltaStateUpdate(
         val devices: List<SmartDevice>
     ) : ServerMessage()
 
