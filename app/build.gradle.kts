@@ -61,6 +61,8 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    //Icons
+    implementation(libs.androidx.compose.icons)
 
      //Ktor
     implementation(platform(libs.ktor.bom))
