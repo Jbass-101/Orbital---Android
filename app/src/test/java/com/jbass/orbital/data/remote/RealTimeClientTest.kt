@@ -1,11 +1,8 @@
 package com.jbass.orbital.data.remote
 
 
-import com.jbass.orbital.domain.model.DeviceMetadata
 import com.jbass.orbital.domain.model.DeviceState
-import com.jbass.orbital.domain.model.DeviceType
 import com.jbass.orbital.domain.model.ServerMessage
-import com.jbass.orbital.domain.model.SmartDevice
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.server.application.install
 import io.ktor.server.routing.routing
@@ -46,7 +43,7 @@ class RealTimeClientTest {
                         val mockDevice =
 
                         // Send Update
-                        val msg = ServerMessage.StateUpdate(listOf(mockDevice))
+                        val msg = ServerMessage.FullStateUpdate(listOf(mockDevice))
                         send(Frame.Text(jsonConfig.encodeToString<ServerMessage>(msg)))
 
                         // Keep socket open
