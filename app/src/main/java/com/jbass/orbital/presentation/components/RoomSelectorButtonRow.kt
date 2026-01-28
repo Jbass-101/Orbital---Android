@@ -8,62 +8,60 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.jbass.orbital.domain.model.DeviceCategory
 import com.jbass.orbital.ui.theme.OrbitalTheme
-import androidx.compose.ui.graphics.Color
 
 
 @Composable
-fun RoomSelectorButtonRow(rooms: List<String>) {
-    var selectedRoom by remember { mutableStateOf(rooms.first()) }
+fun RoomSelectorButtonRow(
+    categories: List<DeviceCategory>,
+    onFilter :(DeviceCategory?) -> Unit) {
+
 
     LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        items(rooms) { room ->
-            val isSelected = room == selectedRoom
+        item {
 
             ElevatedButton(
                 modifier = Modifier.clip(CircleShape),
                 colors = ButtonDefaults.elevatedButtonColors(
-                    contentColor = Color.Red,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
                     containerColor = MaterialTheme.colorScheme.surface
 
                 ),
-                onClick = { selectedRoom = room }
+                onClick = {
+                    onFilter(null)
+                }
             ) {
                 Text(
-                    text = room,
+                    text = "All",
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                )
+
+            }
+        }
+        items(categories) { category ->
+
+            ElevatedButton(
+                modifier = Modifier.clip(CircleShape),
+                colors = ButtonDefaults.elevatedButtonColors(
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                    containerColor = MaterialTheme.colorScheme.surface
+
+                ),
+                onClick = { onFilter(category)}
+            ) {
+                Text(
+                    text = category.name,
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                 )
                 
             }
-
-//            Surface(
-//                modifier = Modifier.clip(CircleShape),
-//                color = if (isSelected)
-//                    MaterialTheme.colorScheme.onBackground
-//                else
-//                    MaterialTheme.colorScheme.surface,
-//                onClick = { selectedRoom = room }
-//            ) {
-//                Text(
-//                    text = room,
-//                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-//                    color = if (isSelected)
-//                        MaterialTheme.colorScheme.background
-//                    else
-//                        MaterialTheme.colorScheme.onSurface
-//                )
-//            }
         }
     }
 }
@@ -74,7 +72,8 @@ fun RoomSelectorButtonRow(rooms: List<String>) {
 fun PreviewRoomSelector (){
     OrbitalTheme() {
         RoomSelectorButtonRow(
-        listOf("Bedroom","Kitchen", "Braai Area")
+        listOf(DeviceCategory.SECURITY, DeviceCategory.LIGHTING),
+            {}
         )
     }
 }

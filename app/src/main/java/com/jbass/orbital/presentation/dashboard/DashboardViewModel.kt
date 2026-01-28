@@ -26,7 +26,7 @@ class DashboardViewModel @Inject constructor(
 
     init {
         // 1. Connect on startup (using Emulator IP for now)
-        connect("ws://192.168.8.155:9090//device")
+        connect("ws://192.168.0.152:9090//device")
 
         // 2. Combine Repository Flows into UI State
         viewModelScope.launch {
@@ -84,6 +84,12 @@ class DashboardViewModel @Inject constructor(
             else -> return
         }
         sendCommand(device.id, newState, device.zoneId)
+    }
+
+    fun onFilter(category: DeviceCategory?){
+        _uiState.value.copy(
+            category = category
+        )
     }
 
     private fun sendCommand(deviceId: String, newState: DeviceState, zoneId: String) {
