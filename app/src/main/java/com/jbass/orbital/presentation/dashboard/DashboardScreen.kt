@@ -1,18 +1,28 @@
 package com.jbass.orbital.presentation.dashboard
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.jbass.orbital.domain.model.ConnectionState
-import com.jbass.orbital.presentation.components.DeviceCard
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -23,6 +33,7 @@ fun DashboardScreen(
     val state by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
+    var currentRoute by remember { mutableStateOf("home") }
     // Handle One-Time Errors (Snackbars)
     LaunchedEffect(true) {
         viewModel.uiEvent.collectLatest { event ->
@@ -52,22 +63,34 @@ fun DashboardScreen(
                 CircularProgressIndicator()
             }
         } else {
-            // THE BENTO GRID
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 160.dp), // Auto-responsive
-                contentPadding = PaddingValues(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.padding(padding)
-            ) {
-                items(state.devices, key = { it.id }) { device ->
-                    DeviceCard(
-                        device = device,
-                        onToggle = { viewModel.onToggleDevice(device) },
-                        onValueChange = { viewModel.onLevelChange(device, it) }
-                    )
-                }
+
+
+            when(currentRoute){
+                "home" -> OrbitalDashboard(
+                    "JBass_101",
+                    "15",
+                    listOf("Dinning", "Masterbedroom"),
+                    devices = state.devices
+                )
+
             }
+
+            // THE BENTO GRID
+//            LazyVerticalGrid(
+//                columns = GridCells.Adaptive(minSize = 160.dp), // Auto-responsive
+//                contentPadding = PaddingValues(16.dp),
+//                horizontalArrangement = Arrangement.spacedBy(12.dp),
+//                verticalArrangement = Arrangement.spacedBy(12.dp),
+//                modifier = Modifier.padding(padding)
+//            ) {
+//                items(state.devices, key = { it.id }) { device ->
+//                    DeviceCard(
+//                        device = device,
+//                        onToggle = { viewModel.onToggleDevice(device) },
+//                        onValueChange = { viewModel.onLevelChange(device, it) }
+//                    )
+//                }
+//            }
         }
     }
 }
