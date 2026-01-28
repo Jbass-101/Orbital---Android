@@ -13,8 +13,9 @@ import androidx.compose.ui.platform.LocalContext
 
 
 val DarkColorScheme = darkColorScheme(
+    surfaceContainer = Color(0x80464646),
     background = Color(0xFF000000),
-    surface = Color(0xFFFFEB3B),
+    surface = Color(0xFF181820),
     surfaceVariant = Color(0xFF1A1A1A),
 
     primary = Color(0xFFFFFFFF),
@@ -29,8 +30,9 @@ val DarkColorScheme = darkColorScheme(
 
 
 val LightColorScheme = lightColorScheme(
-    background = Color(0xFFFFFFFF),
-    surface = Color(0xFFF7F7F7),
+    surfaceContainer = Color(0xFFFFFFFF),
+    background = Color(0xFFE3E3E3),
+    surface = Color(0xFFFFFFFF),
     surfaceVariant = Color(0xFFEEEEEE),
 
     primary = Color(0xFF000000),
@@ -48,7 +50,7 @@ val LightColorScheme = lightColorScheme(
 fun OrbitalTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
