@@ -19,7 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -35,7 +34,7 @@ import com.jbass.orbital.ui.theme.OrbitalTheme
 import java.util.Locale
 
 @Composable
-fun TemperatureCard(currentWeather: CurrentWeather?) {
+fun WeatherCard(currentWeather: CurrentWeather?) {
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth(),
@@ -185,9 +184,9 @@ private fun formattedDataText(value: Double) :String {
 
 @PreviewLightDark
 @Composable
-fun PreviewTemperatureCard (){
+fun PreviewWeatherCard (){
     OrbitalTheme() {
-        TemperatureCard(
+        WeatherCard(
             mockTemperatureData
         )
     }
