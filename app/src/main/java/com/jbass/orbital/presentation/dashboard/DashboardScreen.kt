@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jbass.orbital.domain.model.ConnectionState
+import com.jbass.orbital.presentation.components.mockTemperatureData
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,7 +69,7 @@ fun DashboardScreen(
             when(currentRoute){
                 "home" -> OrbitalDashboard(
                     "JBass_101",
-                    "15",
+                    state.weather,
                     listOf("Dinning", "Masterbedroom"),
                     devices = state.devices
                 )
