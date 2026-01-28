@@ -31,6 +31,7 @@ import com.jbass.orbital.domain.model.weather.CurrentWeather
 import com.jbass.orbital.domain.model.weather.WeatherCondition
 import com.jbass.orbital.domain.model.weather.WeatherLocation
 import com.jbass.orbital.ui.theme.OrbitalTheme
+import java.util.Locale
 
 @Composable
 fun TemperatureCard(currentWeather: CurrentWeather?) {
@@ -77,7 +78,7 @@ fun TemperatureCard(currentWeather: CurrentWeather?) {
 
                     Text(
                         text = buildAnnotatedString {
-                            append("${currentWeather.temperature}")
+                            append(formattedDataText(currentWeather.temperature))
                             withStyle(style = SpanStyle(
                                 fontSize = 12.sp ,
                                 baselineShift = BaselineShift.Superscript
@@ -126,7 +127,7 @@ fun TemperatureCard(currentWeather: CurrentWeather?) {
                     }
                     Column {
                         Text(
-                            text = "${currentWeather.windSpeed} m/s",
+                            text = "${formattedDataText(currentWeather.windSpeed)} m/s",
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.Bold
                         )
@@ -169,6 +170,12 @@ private fun getWeatherConditionText(condition: WeatherCondition) : String {
         WeatherCondition.DRIZZLE -> "Drizzle"
 
     }
+}
+
+
+private fun formattedDataText(value: Double) :String {
+    return String.format(Locale.getDefault(), "%.2f", value)
+
 }
 
 

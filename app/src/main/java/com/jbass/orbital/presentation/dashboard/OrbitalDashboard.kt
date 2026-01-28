@@ -2,34 +2,32 @@ package com.jbass.orbital.presentation.dashboard
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jbass.orbital.R
 import com.jbass.orbital.domain.model.DeviceState
 import com.jbass.orbital.domain.model.DeviceType
 import com.jbass.orbital.domain.model.SmartDevice
-import com.jbass.orbital.R
+import com.jbass.orbital.domain.model.weather.CurrentWeather
+import com.jbass.orbital.presentation.components.RoomSelectorButtonRow
+import com.jbass.orbital.presentation.components.TemperatureCard
 
 @Composable
 fun OrbitalDashboard(
     username: String,
-    temperature: String,
+    currentTemperature: CurrentWeather?,
     rooms: List<String>,
     devices: List<SmartDevice>
 ) {
@@ -44,11 +42,11 @@ fun OrbitalDashboard(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        TemperatureCard(temperature)
+        TemperatureCard(currentTemperature)
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        RoomSelector(rooms)
+        RoomSelectorButtonRow(rooms)
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -85,73 +83,7 @@ private fun TopHeader(username: String) {
     }
 }
 
-@Composable
-private fun TemperatureCard(temperature: String) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(2.dp)
-    ) {
-        Row(
-            modifier = Modifier.padding(20.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Default.FavoriteBorder,
-                contentDescription = "Weather",
-                modifier = Modifier.size(40.dp),
-                tint = MaterialTheme.colorScheme.onSurface
-            )
 
-            Spacer(modifier = Modifier.width(16.dp))
-
-            Column {
-                Text(
-                    text = "Indoor Temperature",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                )
-                Text(
-                    text = temperature,
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun RoomSelector(rooms: List<String>) {
-    var selectedRoom by remember { mutableStateOf(rooms.first()) }
-
-    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        items(rooms) { room ->
-            val isSelected = room == selectedRoom
-
-            Surface(
-                modifier = Modifier.clip(CircleShape),
-                color = if (isSelected)
-                    MaterialTheme.colorScheme.onBackground
-                else
-                    MaterialTheme.colorScheme.surface,
-                onClick = { selectedRoom = room }
-            ) {
-                Text(
-                    text = room,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                    color = if (isSelected)
-                        MaterialTheme.colorScheme.background
-                    else
-                        MaterialTheme.colorScheme.onSurface
-                )
-            }
-        }
-    }
-}
 
 @Composable
 private fun DeviceCard(
@@ -307,13 +239,4 @@ private fun getStatusText(device: SmartDevice): String {
         is DeviceState.Network -> if (s.online) "Online" else "Offline"
         else -> "Ready"
     }
-}
-
-
-
-
-@Preview
-@Composable
-fun PreviewTopHeader (){
-    RoomSelector(listOf("Bedrom","Kitchen"))
 }
