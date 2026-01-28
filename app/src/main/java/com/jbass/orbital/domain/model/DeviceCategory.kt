@@ -8,11 +8,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 enum class DeviceCategory {
     LIGHTING,
-    CLIMATE,
-    MEDIA,
     AUDIO,
-    SECURITY,
+    MEDIA,
+    CLIMATE,
     SHADING,
+    SECURITY,
     ENERGY,
     NETWORK,
     VIRTUAL
