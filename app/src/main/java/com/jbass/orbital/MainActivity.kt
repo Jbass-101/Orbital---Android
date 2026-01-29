@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Text
 import com.jbass.orbital.presentation.dashboard.DashboardScreen
+import com.jbass.orbital.presentation.navigation.OrbitalNavHost
 import com.jbass.orbital.ui.theme.OrbitalTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -16,7 +17,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             OrbitalTheme {
-                DashboardScreen()
+                OrbitalNavHost()
             }
         }
     }

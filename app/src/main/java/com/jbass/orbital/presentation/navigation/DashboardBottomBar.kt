@@ -17,10 +17,7 @@ fun OrbitalBottomBar(
     onItemSelected: (String) -> Unit
 ) {
     val items = listOf(
-        DashboardNavigation.Home,
-        DashboardNavigation.Devices,
-        DashboardNavigation.Scenes,
-        DashboardNavigation.Profile
+        Screen.Dashboard,
     )
 
     NavigationBar(

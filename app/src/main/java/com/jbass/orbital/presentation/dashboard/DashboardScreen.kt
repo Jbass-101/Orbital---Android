@@ -4,20 +4,27 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -42,13 +49,13 @@ import kotlinx.coroutines.flow.collectLatest
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(
-    viewModel: DashboardViewModel = hiltViewModel()
+    viewModel: DashboardViewModel = hiltViewModel(),
+    onRoomsClick : () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
     val devicesCategories = extractDeviceCategories(state.devices)
-    var currentRoute by remember { mutableStateOf("home") }
 
 
     // Handle One-Time Errors (Snackbars)
@@ -68,7 +75,19 @@ fun DashboardScreen(
                 title = {
 
                     ConnectionBadge(state.connectionState)
+                },
+                actions = {
+                    TextButton(onClick = onRoomsClick) {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = "Rooms",
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(Modifier.width(6.dp))
+                        Text("Rooms")
+                    }
                 }
+
             )
         }
     ) { padding ->
@@ -103,18 +122,6 @@ fun DashboardScreen(
                     }
                 }
             }
-
-
-//            when(currentRoute){
-//                "home" -> OrbitalDashboard(
-//                    padding,
-//                    "JBass_101",
-//                    state.weather,
-//                    listOf("Dinning", "Master Bedroom","Bedroom","Kitchen", "Braai Area","Bedroom","Kitchen", "Braai Area"),
-//                    devices = state.devices
-//                )
-//
-//            }
 
         }
     }
