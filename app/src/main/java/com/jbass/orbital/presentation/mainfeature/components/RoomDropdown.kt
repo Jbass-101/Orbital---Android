@@ -1,4 +1,4 @@
-package com.jbass.orbital.presentation.mainfeature
+package com.jbass.orbital.presentation.mainfeature.components
 
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
