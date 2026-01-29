@@ -33,12 +33,23 @@ class DashboardViewModel @Inject constructor(
             combine(
                 repository.deviceState,
                 repository.weatherState,
-                repository.connectionState
-            ) { devices, weather,connState ->
+                repository.connectionState,
+                _uiState.map { it.category }.distinctUntilChanged()
+            ) { devices, weather,connState, category ->
+
+                //Moved sorted devices to top
+                val sortedDevices = devices.sortedBy { it.zoneId }
+                //If a category is selected, return the filtered devices
+                val filtered = category?.let {
+                    sortedDevices.filter { device -> device.type.category == it }
+                } ?: sortedDevices
+
                 DashboardUiState(
                     // Sort by Zone so the grid looks organized
-                    devices = devices.sortedBy { it.zoneId },
+                    devices = sortedDevices,
+                    filteredDevices = filtered,
                     weather = weather,
+                    category = category,
                     connectionState = connState
                 )
             }.collect { _uiState.value = it }
@@ -87,9 +98,9 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun onFilter(category: DeviceCategory?){
-        _uiState.value.copy(
-            category = category
-        )
+        _uiState.update {
+            it.copy(category = category)
+        }
     }
 
     private fun sendCommand(deviceId: String, newState: DeviceState, zoneId: String) {

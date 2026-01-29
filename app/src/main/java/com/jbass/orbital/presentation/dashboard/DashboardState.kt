@@ -8,6 +8,7 @@ import com.jbass.orbital.domain.model.weather.CurrentWeather
 
 data class DashboardUiState(
     val devices: List<SmartDevice> = emptyList(),
+    val filteredDevices: List<SmartDevice> = emptyList(),
     val weather: CurrentWeather? = null,
     val category: DeviceCategory? = null,
     val connectionState: ConnectionState = ConnectionState.Disconnected,

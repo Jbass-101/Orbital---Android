@@ -90,10 +90,7 @@ fun DashboardScreen(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    items(
-                        if (state.category != null) state.devices.filter { device ->
-                            device.type.category == state.category
-                        } else state.devices,
+                    items(state.filteredDevices,
                         key = { it.id }) { device ->
 
                         DeviceCard(
