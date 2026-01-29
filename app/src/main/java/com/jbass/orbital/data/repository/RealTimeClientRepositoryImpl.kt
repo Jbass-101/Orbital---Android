@@ -5,6 +5,7 @@ import com.jbass.orbital.domain.model.ClientMessage
 import com.jbass.orbital.domain.model.ConnectionState
 import com.jbass.orbital.domain.model.SmartDevice
 import com.jbass.orbital.domain.model.UiError
+import com.jbass.orbital.domain.model.Zone
 import com.jbass.orbital.domain.model.weather.CurrentWeather
 import com.jbass.orbital.domain.repository.RealTimeClientRepository
 import kotlinx.coroutines.flow.SharedFlow
@@ -19,6 +20,9 @@ class RealTimeRepositoryImpl(
 
     override val weatherState: StateFlow<CurrentWeather?> =
         client.weatherState
+
+    override val zoneState: StateFlow<List<Zone>> =
+        client.zoneState
 
     override val connectionState: StateFlow<ConnectionState> =
         client.connectionStatus

@@ -30,7 +30,8 @@ sealed class ServerMessage {
     @Serializable
     data class FullStateUpdate(
         val weather: CurrentWeather,
-        val devices: List<SmartDevice>
+        val devices: List<SmartDevice>,
+        val zones: List<Zone>
     ) : ServerMessage()
 
 

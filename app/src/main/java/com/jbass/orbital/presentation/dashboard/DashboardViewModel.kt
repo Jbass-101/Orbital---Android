@@ -33,9 +33,10 @@ class DashboardViewModel @Inject constructor(
             combine(
                 repository.deviceState,
                 repository.weatherState,
+                repository.zoneState,
                 repository.connectionState,
                 _uiState.map { it.selectedCategory }.distinctUntilChanged()
-            ) { devices, weather,connState, category ->
+            ) { devices, weather,rooms,connState, category ->
 
                 //Moved sorted devices to top
                 val sortedDevices = devices.sortedBy { it.zoneId }
@@ -47,6 +48,7 @@ class DashboardViewModel @Inject constructor(
                 DashboardUiState(
                     // Sort by Zone so the grid looks organized
                     devices = sortedDevices,
+                    rooms = rooms,
                     filteredDevices = filtered,
                     weather = weather,
                     selectedCategory = category,

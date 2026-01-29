@@ -6,6 +6,7 @@ import com.jbass.orbital.domain.model.ConnectionState
 import com.jbass.orbital.domain.model.ServerMessage
 import com.jbass.orbital.domain.model.SmartDevice
 import com.jbass.orbital.domain.model.UiError
+import com.jbass.orbital.domain.model.Zone
 import com.jbass.orbital.domain.model.weather.CurrentWeather
 import io.ktor.client.*
 import io.ktor.client.plugins.websocket.*
@@ -43,6 +44,11 @@ class RealTimeClient(
 
     val weatherState: StateFlow<CurrentWeather?> =
         _weatherState.asStateFlow()
+
+    private val _zoneState =
+        MutableStateFlow<List<Zone>>(emptyList())
+
+    val zoneState: StateFlow<List<Zone>> = _zoneState.asStateFlow()
 
 
     //Connection Status
@@ -199,6 +205,8 @@ class RealTimeClient(
                     _cachedDeviceState.value = _deviceCache.values.toList()
 
                     _weatherState.value = message.weather
+
+                    _zoneState.value = message.zones
 
                     Log.v("RealTimeClient", "State updated: ${message.devices.size} devices")
                 }
