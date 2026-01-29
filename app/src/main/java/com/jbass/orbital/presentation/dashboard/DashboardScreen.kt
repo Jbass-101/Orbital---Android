@@ -84,7 +84,7 @@ fun DashboardScreen(
             ) {
                 WeatherCard(state.weather)
                 RoomSelectorButtonRow(devicesCategories,
-                    state.category,
+                    state.selectedCategory,
                     { viewModel.onFilter(it) })
                 LazyVerticalGrid(
                     columns = GridCells.Adaptive(minSize = 160.dp), // Auto-responsive

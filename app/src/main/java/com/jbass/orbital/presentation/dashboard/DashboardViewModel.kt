@@ -34,7 +34,7 @@ class DashboardViewModel @Inject constructor(
                 repository.deviceState,
                 repository.weatherState,
                 repository.connectionState,
-                _uiState.map { it.category }.distinctUntilChanged()
+                _uiState.map { it.selectedCategory }.distinctUntilChanged()
             ) { devices, weather,connState, category ->
 
                 //Moved sorted devices to top
@@ -49,7 +49,7 @@ class DashboardViewModel @Inject constructor(
                     devices = sortedDevices,
                     filteredDevices = filtered,
                     weather = weather,
-                    category = category,
+                    selectedCategory = category,
                     connectionState = connState
                 )
             }.collect { _uiState.value = it }
@@ -97,9 +97,31 @@ class DashboardViewModel @Inject constructor(
         sendCommand(device.id, newState, device.zoneId)
     }
 
+    fun onRoomSelected(roomId: String?) {
+
+        //@Todo Maybe validate with servr before updating ui?
+        _uiState.update {
+            it.copy(
+                selectedRoomId = roomId,
+                selectedCategory = null
+            )
+        }
+
+
+        viewModelScope.launch {
+            val command = ClientMessage.Subscribe(
+                requestId = UUID.randomUUID().toString(),
+                subscribeZones = roomId?.let { setOf(it) } ?: emptySet(),
+                unsubscribeZones = emptySet()
+            )
+            repository.sendCommand(command)
+        }
+
+    }
+
     fun onFilter(category: DeviceCategory?){
         _uiState.update {
-            it.copy(category = category)
+            it.copy(selectedCategory = category)
         }
     }
 
@@ -109,7 +131,7 @@ class DashboardViewModel @Inject constructor(
                 requestId = UUID.randomUUID().toString(),
                 deviceId = deviceId,
                 newState = newState,
-                zoneId = null
+                zoneId = zoneId
             )
             repository.sendCommand(command)
         }
