@@ -21,6 +21,7 @@ import com.jbass.orbital.ui.theme.OrbitalTheme
 @Composable
 fun RoomSelectorButtonRow(
     categories: List<DeviceCategory>,
+    selectedCategory: DeviceCategory?,
     onFilter :(DeviceCategory?) -> Unit) {
 
 
@@ -30,8 +31,14 @@ fun RoomSelectorButtonRow(
             ElevatedButton(
                 modifier = Modifier.clip(CircleShape),
                 colors = ButtonDefaults.elevatedButtonColors(
-                    contentColor = MaterialTheme.colorScheme.onSurface,
-                    containerColor = MaterialTheme.colorScheme.surface
+                    contentColor = if (selectedCategory == null)
+                        MaterialTheme.colorScheme.surface
+                    else
+                        MaterialTheme.colorScheme.onSurface,
+                    containerColor = if (selectedCategory == null)
+                        MaterialTheme.colorScheme.onSurface
+                    else
+                        MaterialTheme.colorScheme.surface
 
                 ),
                 onClick = {
@@ -47,11 +54,20 @@ fun RoomSelectorButtonRow(
         }
         items(categories) { category ->
 
+            val isSelected = selectedCategory == category
+
+
             ElevatedButton(
                 modifier = Modifier.clip(CircleShape),
                 colors = ButtonDefaults.elevatedButtonColors(
-                    contentColor = MaterialTheme.colorScheme.onSurface,
-                    containerColor = MaterialTheme.colorScheme.surface
+                    contentColor = if (isSelected)
+                        MaterialTheme.colorScheme.surface
+                    else
+                        MaterialTheme.colorScheme.onSurface,
+                    containerColor = if (isSelected)
+                        MaterialTheme.colorScheme.onSurface
+                    else
+                        MaterialTheme.colorScheme.surface
 
                 ),
                 onClick = { onFilter(category)}
@@ -73,6 +89,7 @@ fun PreviewRoomSelector (){
     OrbitalTheme() {
         RoomSelectorButtonRow(
         listOf(DeviceCategory.SECURITY, DeviceCategory.LIGHTING),
+            null,
             {}
         )
     }

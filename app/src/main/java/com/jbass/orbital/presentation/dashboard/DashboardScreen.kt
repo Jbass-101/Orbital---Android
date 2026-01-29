@@ -83,7 +83,9 @@ fun DashboardScreen(
             Column(modifier = Modifier.padding(padding)
             ) {
                 WeatherCard(state.weather)
-                RoomSelectorButtonRow(devicesCategories, { viewModel.onFilter(it) })
+                RoomSelectorButtonRow(devicesCategories,
+                    state.category,
+                    { viewModel.onFilter(it) })
                 LazyVerticalGrid(
                     columns = GridCells.Adaptive(minSize = 160.dp), // Auto-responsive
                     contentPadding = PaddingValues(16.dp),
