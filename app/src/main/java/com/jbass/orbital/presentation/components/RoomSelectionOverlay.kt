@@ -1,6 +1,7 @@
 package com.jbass.orbital.presentation.components
 
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -23,12 +24,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jbass.orbital.R
 import com.jbass.orbital.domain.model.Zone
 import com.jbass.orbital.ui.theme.OrbitalTheme
 
@@ -98,7 +103,19 @@ fun RoomCard(name: String, onClick: () -> Unit) {
             .border(1.dp, Color.White.copy(alpha = 0.15f), RoundedCornerShape(24.dp))
             .clickable { onClick() }
     ) {
-        // You can add a room-specific image here later
+
+        // --- BACKGROUND LAYER ---
+        Image(
+            painter = painterResource(id = R.drawable.house_bg),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+                .blur(0.dp) // Increased blur for better readability
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.5f)))
         Text(
             text = name.uppercase(),
             modifier = Modifier
