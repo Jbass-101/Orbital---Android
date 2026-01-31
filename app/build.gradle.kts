@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     //Icons
     implementation(libs.androidx.compose.icons)
+    implementation(libs.androidx.compose.icons.extended)
 
      //Ktor
     implementation(platform(libs.ktor.bom))
