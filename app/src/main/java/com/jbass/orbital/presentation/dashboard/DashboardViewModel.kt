@@ -2,10 +2,12 @@ package com.jbass.orbital.presentation.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jbass.orbital.data.remote.NetworkDiscovery
 import com.jbass.orbital.domain.model.*
 import com.jbass.orbital.domain.repository.RealTimeClientRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -14,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
-    private val repository: RealTimeClientRepository
+    private val repository: RealTimeClientRepository,
+    private val discovery: NetworkDiscovery
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DashboardUiState())
@@ -25,8 +28,8 @@ class DashboardViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
-        // 1. Connect on startup (using Emulator IP for now)
-        connect("ws://192.168.0.152:9090//device")
+        // 1. Scan for server
+        scanForServer()
 
         // 2. Combine Repository Flows into UI State
         viewModelScope.launch {
@@ -68,6 +71,35 @@ class DashboardViewModel @Inject constructor(
             }
         }
     }
+
+    private fun scanForServer() {
+        viewModelScope.launch {
+            // 1. Start a 5-second timer
+            val timeoutJob = launch {
+                delay(5000)
+                // If we are still disconnected after 5s, show the input
+                if (_uiState.value.connectionState !is ConnectionState.Connected) {
+                    _uiState.update { it.copy(showManualInput = true) }
+                }
+            }
+
+            // 2. Start Listening for mDNS
+            discovery.discoverService()
+                .collect { foundUrl ->
+                    // SERVER FOUND!
+                    timeoutJob.cancel() // Cancel the fallback timer
+                    _uiState.update { it.copy(serverUrl = foundUrl, showManualInput = false) }
+                    connect(foundUrl)
+                }
+        }
+    }
+
+    fun onManualIpEntered(ip: String) {
+        val url = "ws://$ip:58080/orbital/device"
+        connect(url)
+        _uiState.update { it.copy(showManualInput = false) }
+    }
+
     fun connect(url: String) = repository.connect(url)
 
     /**

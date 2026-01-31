@@ -14,6 +14,8 @@ data class DashboardUiState(
     val filteredDevices: List<SmartDevice> = emptyList(),
     val weather: CurrentWeather? = null,
     val selectedCategory: DeviceCategory? = null,
+    val showManualInput: Boolean = false,
+    val serverUrl: String? = null,
     val connectionState: ConnectionState = ConnectionState.Disconnected,
     val isLoading: Boolean = true
 )

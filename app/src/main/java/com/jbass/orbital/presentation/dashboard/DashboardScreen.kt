@@ -44,6 +44,7 @@ import com.jbass.orbital.domain.model.SmartDevice
 import com.jbass.orbital.presentation.components.DeviceCard
 import com.jbass.orbital.presentation.components.RoomSelectorButtonRow
 import com.jbass.orbital.presentation.components.WeatherCard
+import com.jbass.orbital.presentation.dashboard.components.ManualConnectionDialog
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -96,6 +97,10 @@ fun DashboardScreen(
         if (state.isLoading && state.devices.isEmpty()) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
+
+                if (state.showManualInput) {
+                    ManualConnectionDialog(onConnect = { viewModel.onManualIpEntered(it) })
+                }
             }
         } else {
 //             THE BENTO GRID
