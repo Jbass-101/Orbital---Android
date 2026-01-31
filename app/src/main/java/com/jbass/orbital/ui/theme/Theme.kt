@@ -12,37 +12,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 
-val DarkColorScheme = darkColorScheme(
-    surfaceContainer = Color(0x80464646),
-    background = Color(0xFF000000),
-    surface = Color(0xFF181820),
-    surfaceVariant = Color(0xFF1A1A1A),
-
-    primary = Color(0xFFFFFFFF),
-    onPrimary = Color(0xFF000000),
-
-    onBackground = Color(0xFFFFFFFF),
-    onSurface = Color(0xFFFFFFFF),
-
-    outline = Color(0xFF262626),
-    outlineVariant = Color(0xFF1A1A1A)
-)
-
-
-val LightColorScheme = lightColorScheme(
-    surfaceContainer = Color(0xFFFFFFFF),
-    background = Color(0xFFE3E3E3),
-    surface = Color(0xFFFFFFFF),
-    surfaceVariant = Color(0xFFEEEEEE),
-
-    primary = Color(0xFF000000),
-    onPrimary = Color(0xFFFFFFFF),
-
-    onBackground = Color(0xFF000000),
-    onSurface = Color(0xFF000000),
-
-    outline = Color(0xFFE0E0E0),
-    outlineVariant = Color(0xFFEEEEEE)
+private val DarkColorScheme = darkColorScheme(
+    primary = Color(0xFF00C8FF),
+    background = Color(0xFF0A0A0A),
+    surface = Color(0xFF0A0A0A),
+    surfaceVariant = Color(0xFF1C1C1E),
+    onBackground = Color.White,
+    onSurface = Color.White,
+    onSurfaceVariant = Color(0xFF8E8E93)
 )
 
 
@@ -60,7 +37,7 @@ fun OrbitalTheme(
         }
 
         darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        else -> DarkColorScheme
     }
 
     MaterialTheme(
