@@ -1,14 +1,16 @@
 package com.jbass.orbital.presentation.components
 
-
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,13 +23,16 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.jbass.orbital.R
 import com.jbass.orbital.domain.model.DeviceMetadata
 import com.jbass.orbital.domain.model.DeviceState
@@ -42,107 +47,105 @@ fun DeviceCard(
     onValueChange: (Float) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isActive = when (val s = device.state) {
+    val isOn = when (val s = device.state) {
         is DeviceState.OnOff -> s.isOn
         is DeviceState.Level -> s.value > 0
         is DeviceState.Media -> s.isOn
         else -> false
     }
 
-    val cardColor by animateColorAsState(
-        targetValue = if (isActive)
-            MaterialTheme.colorScheme.primaryContainer
-        else
-            MaterialTheme.colorScheme.surface,
-        label = "cardBg"
+    // Luxury Theme Constants
+    val accentColor = MaterialTheme.colorScheme.primary
+    val glassAlpha = if (isOn) 0.15f else 0.08f
+    val borderAlpha = if (isOn) 0.4f else 0.12f
+
+    val animatedBorderColor by animateColorAsState(
+        targetValue = if (isOn) accentColor.copy(alpha = borderAlpha) else Color.White.copy(alpha = borderAlpha),
+        label = "borderGlow"
     )
 
-    val contentColor by animateColorAsState(
-        targetValue = if (isActive)
-            MaterialTheme.colorScheme.onPrimaryContainer
-        else
-            MaterialTheme.colorScheme.onSurface,
-        label = "contentColor"
-    )
-
-    Column(
+    Box(
         modifier = modifier
             .aspectRatio(1f)
-            .clip(RoundedCornerShape(28.dp))
-            .background(cardColor)
-            .clickable(onClick = onToggle)
-            .padding(18.dp),
-        verticalArrangement = Arrangement.SpaceBetween
+            .clip(RoundedCornerShape(32.dp)) // Savant-style high radius
+            .background(Color.White.copy(alpha = glassAlpha))
+            .border(1.dp, animatedBorderColor, RoundedCornerShape(32.dp))
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null // Removes cheap ripple for premium feel
+            ) { onToggle() }
+            .padding(20.dp)
     ) {
-
-        // ─── Header ───────────────────────────────
-        Box(
-            modifier = Modifier
-                .size(44.dp)
-                .clip(CircleShape)
-                .background(
-                    if (isActive)
-                        MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
-                    else
-                        MaterialTheme.colorScheme.surfaceVariant
-                ),
-            contentAlignment = Alignment.Center
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Icon(
-                painter = painterResource(getIconForDevice(device.type)),
-                contentDescription = null,
-                tint = if (isActive)
-                    MaterialTheme.colorScheme.primary
-                else
-                    MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(22.dp)
-            )
-        }
-
-        // ─── Middle Content ───────────────────────
-        when (val state = device.state) {
-            is DeviceState.Level -> {
-                Slider(
-                    value = state.value.toFloat(),
-                    onValueChange = onValueChange,
-                    valueRange = 0f..100f,
-                    colors = SliderDefaults.colors(
-                        thumbColor = MaterialTheme.colorScheme.primary,
-                        activeTrackColor = MaterialTheme.colorScheme.primary,
-                        inactiveTrackColor = MaterialTheme.colorScheme.surfaceVariant
-                    )
+            // ─── Header: Icon ───────────────────────────────
+            Box(
+                modifier = Modifier
+                    .size(42.dp)
+                    .clip(CircleShape)
+                    .background(Color.White.copy(alpha = 0.05f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(getIconForDevice(device.type)),
+                    contentDescription = null,
+                    tint = if (isOn) accentColor else Color.White.copy(alpha = 0.6f),
+                    modifier = Modifier.size(24.dp)
                 )
             }
 
-            is DeviceState.Temperature -> {
+            // ─── Middle: Specific Controls ───────────────────────
+            Box(modifier = Modifier.fillMaxWidth()) {
+                when (val state = device.state) {
+                    is DeviceState.Level -> {
+                        Slider(
+                            value = state.value.toFloat(),
+                            onValueChange = onValueChange,
+                            valueRange = 0f..100f,
+                            colors = SliderDefaults.colors(
+                                thumbColor = Color.White,
+                                activeTrackColor = accentColor,
+                                inactiveTrackColor = Color.White.copy(alpha = 0.1f)
+                            ),
+                            modifier = Modifier.height(24.dp)
+                        )
+                    }
+
+                    is DeviceState.Temperature -> {
+                        Text(
+                            text = "${state.current}°",
+                            style = MaterialTheme.typography.displaySmall,
+                            fontWeight = FontWeight.ExtraLight, // Expensive look
+                            color = Color.White
+                        )
+                    }
+
+                    else -> {
+
+                    }
+                }
+            }
+
+            // ─── Footer: Labels ───────────────────────────────
+            Column {
                 Text(
-                    text = "${state.current}°C",
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = contentColor
+                    text = device.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Medium,
+                    color = Color.White,
+                    maxLines = 1
+                )
+                Text(
+                    text = getStatusText(device).uppercase(),
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        letterSpacing = 1.2.sp,
+                        fontWeight = FontWeight.Light
+                    ),
+                    color = Color.White.copy(alpha = 0.5f)
                 )
             }
-
-            else -> Spacer(Modifier.height(12.dp))
-        }
-
-        // ─── Footer ───────────────────────────────
-        Column {
-            Text(
-                text = device.name,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = contentColor,
-                maxLines = 1
-            )
-
-            Spacer(Modifier.height(2.dp))
-
-            Text(
-                text = getStatusText(device),
-                style = MaterialTheme.typography.labelMedium,
-                color = contentColor.copy(alpha = 0.7f)
-            )
         }
     }
 }
@@ -172,84 +175,39 @@ private fun getStatusText(device: SmartDevice): String {
     }
 }
 
-@PreviewLightDark
+@Preview(name = "Light Tile", backgroundColor = 0xFF0A0A0A, showBackground = true)
 @Composable
-fun PreviewLight (){
-    OrbitalTheme() {
-        DeviceCard(
-            SmartDevice(
-                id = "light-1",
-                name = "Light Switch",
-                type = DeviceType.LIGHT,
-                state = DeviceState.OnOff(true),
-                zoneId = "z1",
-                metadata = DeviceMetadata(
-                    "Test",
-                    "Model",
-                    "1.0",
-                    isReachable = true,
-                    lastSeenEpochMs = 0
-                )
-            ),
-            {},
-            {}
-        )
+fun PreviewSavantLight() {
+    OrbitalTheme(darkTheme = true) {
+        Box(Modifier.padding(20.dp).size(180.dp)) {
+            DeviceCard(
+                device = mockDevice(DeviceType.LIGHT, DeviceState.OnOff(true), "Kitchen Light"),
+                onToggle = {},
+                onValueChange = {}
+            )
+        }
     }
-
 }
 
-
-@PreviewLightDark
+@Preview(name = "Dimmer Tile", backgroundColor = 0xFF0A0A0A, showBackground = true)
 @Composable
-fun PreviewDimmer (){
-    OrbitalTheme() {
-        DeviceCard(
-            SmartDevice(
-                id = "light-1",
-                name = "Dimmer",
-                type = DeviceType.DIMMER,
-                state = DeviceState.Level(50),
-                zoneId = "z1",
-                metadata = DeviceMetadata(
-                    "Test",
-                    "Model",
-                    "1.0",
-                    isReachable = true,
-                    lastSeenEpochMs = 0
-                )
-            ),
-            {},
-            {}
-        )
+fun PreviewSavantDimmer() {
+    OrbitalTheme(darkTheme = true) {
+        Box(Modifier.padding(20.dp).size(180.dp)) {
+            DeviceCard(
+                device = mockDevice(DeviceType.DIMMER, DeviceState.Level(65), "Chandelier"),
+                onToggle = {},
+                onValueChange = {}
+            )
+        }
     }
-
 }
 
-
-@PreviewLightDark
-@Composable
-fun PreviewMedia (){
-    OrbitalTheme() {
-        DeviceCard(
-            SmartDevice(
-                id = "light-1",
-                name = "Media Player",
-                type = DeviceType.MEDIA_PLAYER,
-                state = DeviceState.Media(true,
-                    volume = 74,
-                    source = "DSTV"),
-                zoneId = "z1",
-                metadata = DeviceMetadata(
-                    "Test",
-                    "Model",
-                    "1.0",
-                    isReachable = false,
-                    lastSeenEpochMs = 0
-                )
-            ),
-            {},
-            {}
-        )
-    }
-
-}
+private fun mockDevice(type: DeviceType, state: DeviceState, name: String) = SmartDevice(
+    id = "id", name = name, type = type, state = state, zoneId = "z1",
+    metadata = DeviceMetadata(
+        "T", "M", "1", "192.168.0.1", "00:00:",
+        isReachable = true,
+        lastSeenEpochMs = 56000
+    )
+)
