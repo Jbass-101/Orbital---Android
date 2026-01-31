@@ -152,9 +152,6 @@ private fun getIconForCategory(category: DeviceCategory): ImageVector {
     }
 }
 
-private fun String.capitalize() = replaceFirstChar { it.uppercase() }
-
-
 @Preview(name = "Orbital Dark Nav", group = "Navigation", backgroundColor = 0xFF0A0A0A, showBackground = true)
 @Composable
 fun PreviewBottomNavFull() {
