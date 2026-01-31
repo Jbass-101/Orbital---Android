@@ -41,6 +41,11 @@ class DashboardViewModel @Inject constructor(
                 _uiState.map { it.selectedCategory }.distinctUntilChanged()
             ) { devices, weather,rooms,connState, category ->
 
+                //get all available categories
+                val availableCategories = DeviceCategory.entries.filter { category ->
+                    devices.any { it.type.category == category }
+                }
+
                 //Moved sorted devices to top
                 val sortedDevices = devices.sortedBy { it.zoneId }
                 //If a category is selected, return the filtered devices
@@ -49,11 +54,11 @@ class DashboardViewModel @Inject constructor(
                 } ?: sortedDevices
 
                 DashboardUiState(
-                    // Sort by Zone so the grid looks organized
                     devices = sortedDevices,
                     rooms = rooms,
                     filteredDevices = filtered,
                     weather = weather,
+                    categories = availableCategories,
                     selectedCategory = category,
                     connectionState = connState
                 )
@@ -93,7 +98,6 @@ class DashboardViewModel @Inject constructor(
                 }
         }
     }
-
     fun onManualIpEntered(ip: String) {
         val url = "ws://$ip:58080/orbital/device"
         connect(url)

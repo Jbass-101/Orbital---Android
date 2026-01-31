@@ -13,6 +13,7 @@ data class DashboardUiState(
     val selectedRoomId: String? = null,
     val filteredDevices: List<SmartDevice> = emptyList(),
     val weather: CurrentWeather? = null,
+    val categories : List<DeviceCategory> = emptyList(),
     val selectedCategory: DeviceCategory? = null,
     val showManualInput: Boolean = false,
     val serverUrl: String? = null,
