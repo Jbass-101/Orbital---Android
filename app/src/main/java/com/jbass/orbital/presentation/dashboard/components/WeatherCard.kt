@@ -1,4 +1,4 @@
-package com.jbass.orbital.presentation.components
+package com.jbass.orbital.presentation.dashboard.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -132,7 +132,7 @@ fun WeatherCard(currentWeather: CurrentWeather?) {
 }
 
 @Composable
-fun weatherCardStat(data: String, title: String){
+private fun weatherCardStat(data: String, title: String){
     Column {
         Text(
             text = data,
