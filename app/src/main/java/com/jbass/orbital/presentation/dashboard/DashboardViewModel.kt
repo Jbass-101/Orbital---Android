@@ -104,6 +104,11 @@ class DashboardViewModel @Inject constructor(
         _uiState.update { it.copy(showManualInput = false) }
     }
 
+    fun showManualInput(){
+        _uiState.update { it.copy(showManualInput = true) }
+
+    }
+
     fun connect(url: String) = repository.connect(url)
 
     /**
