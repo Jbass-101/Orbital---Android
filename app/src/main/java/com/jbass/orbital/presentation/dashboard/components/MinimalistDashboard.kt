@@ -79,13 +79,15 @@ fun MinimalistDashboard(
 @Composable
 fun previewMinimum(){
     OrbitalTheme() {
-        MinimalistDashboard(
-            state = DashboardUiState(
-                categories =
-                    listOf(DeviceCategory.SECURITY, DeviceCategory.LIGHTING),
-                selectedCategory = null,
-                weather = mockTemperatureData
-            ),) { }
+        DashboardBackground() {
+            MinimalistDashboard(
+                state = DashboardUiState(
+                    categories =
+                        listOf(DeviceCategory.SECURITY, DeviceCategory.LIGHTING),
+                    selectedCategory = null,
+                    weather = mockTemperatureData
+                ),) { }
+        }
 
     }
 }
