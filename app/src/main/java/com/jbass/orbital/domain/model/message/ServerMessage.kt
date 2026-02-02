@@ -42,6 +42,12 @@ sealed class ServerMessage {
         val devices: List<SmartDevice>
     ) : ServerMessage()
 
+
+    @Serializable
+    data class DeltaWeatherUpdate(
+        val weather: CurrentWeather,
+    ) : ServerMessage()
+
     /**
      * Direct Response: "The specific command (requestId) succeeded or failed."
      */

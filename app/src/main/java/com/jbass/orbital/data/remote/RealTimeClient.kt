@@ -28,7 +28,7 @@ import kotlin.math.min
 class RealTimeClient(
     private val client: HttpClient,
     private val scope: CoroutineScope
-) {
+)  {
 
     /* ----------------------------
      * UI State
@@ -216,6 +216,10 @@ class RealTimeClient(
                     }
 
                     _cachedDeviceState.value = _deviceCache.values.toList()
+
+                }
+                is ServerMessage.DeltaWeatherUpdate -> {
+                    _weatherState.value = message.weather
 
                 }
                 is ServerMessage.CommandAck -> {
