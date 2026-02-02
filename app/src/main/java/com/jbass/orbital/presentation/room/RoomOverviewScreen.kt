@@ -11,7 +11,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.jbass.orbital.domain.model.DeviceCategory
+import com.jbass.orbital.domain.model.device.DeviceCategory
 import com.jbass.orbital.presentation.dashboard.DashboardUiState
 import com.jbass.orbital.presentation.room.components.CategoryCard
 import com.jbass.orbital.presentation.room.components.RoomDropdown

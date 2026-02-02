@@ -12,7 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.jbass.orbital.domain.model.DeviceCategory
+import com.jbass.orbital.domain.model.device.DeviceCategory
 import com.jbass.orbital.presentation.dashboard.DashboardScreen
 import com.jbass.orbital.presentation.dashboard.DashboardViewModel
 import com.jbass.orbital.presentation.room.RoomCategoryDevicesScreen

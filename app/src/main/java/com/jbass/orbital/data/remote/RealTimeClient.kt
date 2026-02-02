@@ -1,12 +1,12 @@
 package com.jbass.orbital.data.remote
 
 import android.util.Log
-import com.jbass.orbital.domain.model.ClientMessage
+import com.jbass.orbital.domain.model.message.ClientMessage
 import com.jbass.orbital.domain.model.ConnectionState
-import com.jbass.orbital.domain.model.ServerMessage
-import com.jbass.orbital.domain.model.SmartDevice
+import com.jbass.orbital.domain.model.message.ServerMessage
+import com.jbass.orbital.domain.model.device.SmartDevice
 import com.jbass.orbital.domain.model.UiError
-import com.jbass.orbital.domain.model.Zone
+import com.jbass.orbital.domain.model.zone.Zone
 import com.jbass.orbital.domain.model.weather.CurrentWeather
 import io.ktor.client.*
 import io.ktor.client.plugins.websocket.*

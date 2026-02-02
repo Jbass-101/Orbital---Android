@@ -13,7 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import com.jbass.orbital.domain.model.Zone
+import com.jbass.orbital.domain.model.zone.Zone
 import com.jbass.orbital.ui.theme.OrbitalTheme
 
 @OptIn(ExperimentalMaterial3Api::class)

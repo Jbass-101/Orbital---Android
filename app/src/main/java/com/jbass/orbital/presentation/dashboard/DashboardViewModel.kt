@@ -4,6 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jbass.orbital.data.remote.NetworkDiscovery
 import com.jbass.orbital.domain.model.*
+import com.jbass.orbital.domain.model.device.DeviceCategory
+import com.jbass.orbital.domain.model.device.DeviceState
+import com.jbass.orbital.domain.model.device.SmartDevice
+import com.jbass.orbital.domain.model.message.ClientMessage
 import com.jbass.orbital.domain.repository.RealTimeClientRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel

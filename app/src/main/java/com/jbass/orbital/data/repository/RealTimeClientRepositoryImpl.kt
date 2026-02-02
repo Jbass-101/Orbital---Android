@@ -1,11 +1,11 @@
 package com.jbass.orbital.data.repository
 
 import com.jbass.orbital.data.remote.RealTimeClient
-import com.jbass.orbital.domain.model.ClientMessage
+import com.jbass.orbital.domain.model.message.ClientMessage
 import com.jbass.orbital.domain.model.ConnectionState
-import com.jbass.orbital.domain.model.SmartDevice
+import com.jbass.orbital.domain.model.device.SmartDevice
 import com.jbass.orbital.domain.model.UiError
-import com.jbass.orbital.domain.model.Zone
+import com.jbass.orbital.domain.model.zone.Zone
 import com.jbass.orbital.domain.model.weather.CurrentWeather
 import com.jbass.orbital.domain.repository.RealTimeClientRepository
 import kotlinx.coroutines.flow.SharedFlow

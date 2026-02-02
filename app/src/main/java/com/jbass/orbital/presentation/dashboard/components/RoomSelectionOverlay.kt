@@ -38,7 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jbass.orbital.R
-import com.jbass.orbital.domain.model.Zone
+import com.jbass.orbital.domain.model.zone.Zone
 import com.jbass.orbital.ui.theme.OrbitalTheme
 
 @Composable

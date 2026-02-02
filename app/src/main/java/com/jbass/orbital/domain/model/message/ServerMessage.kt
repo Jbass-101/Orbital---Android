@@ -1,7 +1,9 @@
-package com.jbass.orbital.domain.model
+package com.jbass.orbital.domain.model.message
 
 
+import com.jbass.orbital.domain.model.device.SmartDevice
 import com.jbass.orbital.domain.model.weather.CurrentWeather
+import com.jbass.orbital.domain.model.zone.Zone
 import kotlinx.serialization.Serializable
 
 /**

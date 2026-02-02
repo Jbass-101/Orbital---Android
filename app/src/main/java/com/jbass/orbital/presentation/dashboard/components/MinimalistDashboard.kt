@@ -19,7 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.jbass.orbital.domain.model.DeviceCategory
+import com.jbass.orbital.domain.model.device.DeviceCategory
 import com.jbass.orbital.presentation.dashboard.DashboardUiState
 import com.jbass.orbital.presentation.dashboard.LiveStatusCard
 import com.jbass.orbital.ui.theme.OrbitalTheme

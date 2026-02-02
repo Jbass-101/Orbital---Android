@@ -14,8 +14,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.jbass.orbital.domain.model.DeviceCategory
-import com.jbass.orbital.domain.model.SmartDevice
+import com.jbass.orbital.domain.model.device.DeviceCategory
+import com.jbass.orbital.domain.model.device.SmartDevice
 import com.jbass.orbital.presentation.components.DeviceCard
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -48,8 +48,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jbass.orbital.domain.model.ConnectionState
-import com.jbass.orbital.domain.model.DeviceCategory
-import com.jbass.orbital.domain.model.SmartDevice
+import com.jbass.orbital.domain.model.device.DeviceCategory
+import com.jbass.orbital.domain.model.device.SmartDevice
 import com.jbass.orbital.presentation.components.DeviceCard
 import com.jbass.orbital.presentation.dashboard.components.RoomSelectionOverlay
 import com.jbass.orbital.presentation.dashboard.components.BottomNavBar

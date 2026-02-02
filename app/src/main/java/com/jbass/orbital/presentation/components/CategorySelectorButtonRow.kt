@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.jbass.orbital.domain.model.DeviceCategory
+import com.jbass.orbital.domain.model.device.DeviceCategory
 import com.jbass.orbital.ui.theme.OrbitalTheme
 
 

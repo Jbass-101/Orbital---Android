@@ -34,10 +34,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jbass.orbital.R
-import com.jbass.orbital.domain.model.DeviceMetadata
-import com.jbass.orbital.domain.model.DeviceState
-import com.jbass.orbital.domain.model.DeviceType
-import com.jbass.orbital.domain.model.SmartDevice
+import com.jbass.orbital.domain.model.device.DeviceMetadata
+import com.jbass.orbital.domain.model.device.DeviceState
+import com.jbass.orbital.domain.model.device.DeviceType
+import com.jbass.orbital.domain.model.device.SmartDevice
 import com.jbass.orbital.ui.theme.OrbitalTheme
 
 @Composable
