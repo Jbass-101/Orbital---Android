@@ -6,9 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Shield
-import androidx.compose.material.icons.rounded.Thermostat
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jbass.orbital.domain.model.device.DeviceCategory
 import com.jbass.orbital.presentation.dashboard.DashboardUiState
-import com.jbass.orbital.presentation.dashboard.LiveStatusCard
 import com.jbass.orbital.ui.theme.OrbitalTheme
 
 
@@ -57,20 +53,7 @@ fun MinimalistDashboard(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Live Event Stack
-        LiveStatusCard(
-            title = "Security",
-            status = "All systems secure",
-            icon = Icons.Rounded.Shield
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        LiveStatusCard(
-            title = "Climate",
-            status = "Average 22°C • 2 Zones Active",
-            icon = Icons.Rounded.Thermostat
-        )
+        LiveStatusSection(state.devices)
     }
 }
 

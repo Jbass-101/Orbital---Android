@@ -172,6 +172,13 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
+    fun onCloseCategoryControl(){
+        _uiState.update {
+            it.copy(selectedCategory = null)
+        }
+
+    }
+
     private fun sendCommand(deviceId: String, newState: DeviceState, zoneId: String) {
         viewModelScope.launch {
             val command = ClientMessage.Command(

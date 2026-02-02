@@ -21,7 +21,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.Blinds
 import androidx.compose.material.icons.rounded.Bolt
-import androidx.compose.material.icons.rounded.Dashboard
 import androidx.compose.material.icons.rounded.Lightbulb
 import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.material.icons.rounded.PlayCircle
@@ -65,14 +64,6 @@ fun BottomNavBar(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            item {
-                BottomNavItem(
-                    icon = Icons.Rounded.Dashboard,
-                    label = "All",
-                    selected = selectedCategory == null,
-                    onClick = { onFilter(null) }
-                )
-            }
             items(categories) { category ->
 
                 BottomNavItem(
@@ -111,7 +102,7 @@ fun BottomNavItem(
             imageVector = icon,
             contentDescription = label,
             tint = contentColor,
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(40.dp)
         )
 
         Spacer(modifier = Modifier.height(6.dp))
@@ -120,7 +111,7 @@ fun BottomNavItem(
             text = label,
             color = contentColor,
             style = MaterialTheme.typography.labelSmall.copy(
-                fontSize = 10.sp,
+                fontSize = 12.sp,
                 fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
                 letterSpacing = 0.5.sp
             )
