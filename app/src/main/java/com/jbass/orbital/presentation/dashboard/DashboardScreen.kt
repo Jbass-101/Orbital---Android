@@ -57,7 +57,7 @@ fun DashboardScreen(
         onRoomSelected = viewModel::onRoomSelected,
         onManualIpEntered = viewModel::onManualIpEntered,
         onCloseCategory = viewModel::onCloseCategoryControl,
-        onShowManualInput = viewModel::showManualInput
+        onShowManualInput = viewModel::showManualInput,
     )
 
 }

@@ -48,7 +48,7 @@ fun DashboardContent(
     onRoomSelected:(String) -> Unit,
     onManualIpEntered: (String) -> Unit,
     onCloseCategory: () -> Unit,
-    onShowManualInput: () -> Unit
+    onShowManualInput: () -> Unit,
 ){
 
     var isRoomOverlayVisible by remember { mutableStateOf(false) }
@@ -163,7 +163,7 @@ fun PreviewDashboardGlance() {
             onRoomSelected = {},
             onManualIpEntered = {},
             onCloseCategory = {},
-            onShowManualInput = {}
+            onShowManualInput = {},
         )
     }
 }
@@ -184,7 +184,7 @@ fun PreviewDiscoveryPhase() {
             onRoomSelected = {},
             onManualIpEntered = {},
             onCloseCategory = {},
-            onShowManualInput = {}
+            onShowManualInput = {},
         )
     }
 }
