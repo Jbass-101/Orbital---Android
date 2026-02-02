@@ -17,14 +17,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jbass.orbital.domain.model.device.DeviceCategory
+import com.jbass.orbital.presentation.components.WeatherCard
+import com.jbass.orbital.presentation.components.mockTemperatureData
 import com.jbass.orbital.presentation.dashboard.DashboardUiState
 import com.jbass.orbital.ui.theme.OrbitalTheme
 
 
 @Composable
 fun MinimalistDashboard(
-    state: DashboardUiState,
-    onCategoryClick: (DeviceCategory) -> Unit
+    state: DashboardUiState
 ) {
     Column(
         modifier = Modifier
@@ -69,7 +70,7 @@ fun previewMinimum(){
                         listOf(DeviceCategory.SECURITY, DeviceCategory.LIGHTING),
                     selectedCategory = null,
                     weather = mockTemperatureData
-                ),) { }
+                ),)
         }
 
     }

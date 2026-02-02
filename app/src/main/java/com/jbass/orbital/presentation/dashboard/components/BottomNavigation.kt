@@ -56,7 +56,7 @@ fun BottomNavBar(
             .padding(horizontal = 20.dp, vertical = 24.dp) // Floating effect
             .clip(RoundedCornerShape(32.dp))
             .background(Color.White.copy(alpha = 0.08f))
-            .border(1.dp, Color.White.copy(alpha = 0.15f), RoundedCornerShape(32.dp))
+            .border(1.dp, Color.White.copy(alpha = 0.12f), RoundedCornerShape(32.dp))
             .padding(vertical = 12.dp, horizontal = 8.dp)
     ) {
         LazyRow(

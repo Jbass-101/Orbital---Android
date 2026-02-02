@@ -2,6 +2,7 @@ package com.jbass.orbital.presentation.util
 
 import com.jbass.orbital.domain.model.ConnectionState
 import com.jbass.orbital.domain.model.device.ClimateMode
+import com.jbass.orbital.domain.model.device.DeviceCategory
 import com.jbass.orbital.domain.model.device.DeviceMetadata
 import com.jbass.orbital.domain.model.device.DeviceState
 import com.jbass.orbital.domain.model.device.DeviceType
@@ -9,6 +10,7 @@ import com.jbass.orbital.domain.model.device.SmartDevice
 import com.jbass.orbital.domain.model.weather.CurrentWeather
 import com.jbass.orbital.domain.model.weather.WeatherCondition
 import com.jbass.orbital.domain.model.weather.WeatherLocation
+import com.jbass.orbital.domain.model.zone.Zone
 import com.jbass.orbital.presentation.dashboard.DashboardUiState
 
 object MockData {
@@ -102,5 +104,15 @@ object MockData {
         connectionState = ConnectionState.Connected,
         selectedRoomId = "Living Room",
         selectedCategory = null
+    )
+
+    // Ensure this exists in your MockData util or similar
+    val previewState = DashboardUiState(
+        devices = MockData.Devices,
+        weather = MockData.Weather,
+        rooms = listOf(Zone("1", "Living Room"), Zone("2", "Kitchen"), Zone("3", "Cinema")),
+        categories = listOf(DeviceCategory.LIGHTING, DeviceCategory.CLIMATE, DeviceCategory.SECURITY),
+        isLoading = false,
+        connectionState = ConnectionState.Connected
     )
 }

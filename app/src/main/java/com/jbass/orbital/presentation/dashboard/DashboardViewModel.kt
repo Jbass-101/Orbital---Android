@@ -64,7 +64,8 @@ class DashboardViewModel @Inject constructor(
                     weather = weather,
                     categories = availableCategories,
                     selectedCategory = category,
-                    connectionState = connState
+                    connectionState = connState,
+                    isLoading = false
                 )
             }.collect { _uiState.value = it }
         }

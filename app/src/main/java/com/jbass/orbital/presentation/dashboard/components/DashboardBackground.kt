@@ -28,7 +28,7 @@ fun DashboardBackground(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Color(0xFF0A0A0A))
+            .background(Color.Black)
     ) {
 
         Image(
@@ -36,7 +36,7 @@ fun DashboardBackground(
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
-                .blur(10.dp)
+                .blur(12.dp)
         )
 
         Box(
@@ -45,7 +45,7 @@ fun DashboardBackground(
                 .background(
                     Brush.verticalGradient(
                         0f to Color.Black.copy(alpha = 0.6f),
-                        0.5f to Color.Black.copy(alpha = 0.7f),
+                        0.4f to Color.Transparent,
                         1f to Color.Black.copy(alpha = 0.8f)
                     )
                 )

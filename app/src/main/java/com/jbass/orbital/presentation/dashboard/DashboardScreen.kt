@@ -1,41 +1,25 @@
 package com.jbass.orbital.presentation.dashboard
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -44,15 +28,7 @@ import com.jbass.orbital.domain.model.ConnectionState
 import com.jbass.orbital.domain.model.device.DeviceCategory
 import com.jbass.orbital.domain.model.device.SmartDevice
 import com.jbass.orbital.presentation.components.DeviceCard
-import com.jbass.orbital.presentation.dashboard.components.BottomNavBar
-import com.jbass.orbital.presentation.dashboard.components.CategoryControlPanel
-import com.jbass.orbital.presentation.dashboard.components.DashboardBackground
-import com.jbass.orbital.presentation.dashboard.components.DiscoveryRipple
-import com.jbass.orbital.presentation.dashboard.components.ManualConnectionDialog
-import com.jbass.orbital.presentation.dashboard.components.MinimalistDashboard
-import com.jbass.orbital.presentation.dashboard.components.RoomSelectionOverlay
-import com.jbass.orbital.presentation.dashboard.components.TopTabs
-import com.jbass.orbital.presentation.dashboard.components.WeatherCard
+import com.jbass.orbital.presentation.components.WeatherCard
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,9 +39,6 @@ fun DashboardScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
-    var isRoomOverlayVisible by remember { mutableStateOf(false) }
-    val sheetState = rememberModalBottomSheetState()
-    var selectedCategoryForModal by remember { mutableStateOf<DeviceCategory?>(null) }
 
     // Handle One-Time Errors (Snackbars)
     LaunchedEffect(true) {
@@ -76,102 +49,17 @@ fun DashboardScreen(
         }
     }
 
+    DashboardContent(
+        state = state,
+        onFilter = viewModel::onFilter,
+        onToggleDevice = viewModel::onToggleDevice,
+        onLevelChange = viewModel::onLevelChange,
+        onRoomSelected = viewModel::onRoomSelected,
+        onManualIpEntered = viewModel::onManualIpEntered,
+        onCloseCategory = viewModel::onCloseCategoryControl,
+        onShowManualInput = viewModel::showManualInput
+    )
 
-    Box(modifier = Modifier
-        .fillMaxSize()){
-
-
-        // Show loading if connecting and no devices yet
-        if (state.isLoading && state.devices.isEmpty()) {
-            DiscoveryRipple(
-                statusText = when (state.connectionState) {
-                    is ConnectionState.Reconnecting -> "Reconnecting..."
-                    else -> "Scanning Local Network..."
-                },
-                showManualInput = { viewModel.showManualInput() }
-            )
-
-        } else {
-            // 1. Root Container (The "Canvas")
-            DashboardBackground() {
-
-                // --- LAYER 1: Scrolling Content ---
-                MinimalistDashboard(state) { }
-
-                // --- LAYER 2: Floating Header (Top Layer) ---
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .fillMaxWidth()
-                        .background(
-                            Brush.verticalGradient(
-                                listOf(Color.Black.copy(alpha = 0.4f), Color.Transparent)
-                            )
-                        )
-                        .statusBarsPadding()
-                ) {
-                    TopTabs(
-                        onRoomsClick = { isRoomOverlayVisible = true },
-                        onScenesClick = { /* Handle Scenes */ },
-                        onSettingsClick = { /* Handle Settings */ }
-                    )
-                }
-
-                // --- LAYER 3: Floating Glass Dock (Bottom Layer) ---
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .fillMaxWidth()
-                        .navigationBarsPadding()
-                ) {
-                    BottomNavBar(
-                        categories = DeviceCategory.entries,
-                        selectedCategory = state.selectedCategory,
-                        onFilter = { viewModel.onFilter(it) }
-                    )
-                }
-
-                // The Control Popup
-                if (state.selectedCategory != null) {
-                    ModalBottomSheet(
-                        onDismissRequest = { viewModel.onCloseCategoryControl() },
-                        sheetState = sheetState,
-                        containerColor = Color.Transparent, // We will use our own glass background
-                        scrimColor = Color.Black.copy(alpha = 0.4f)
-                    ) {
-                        CategoryControlPanel(
-                            category = state.selectedCategory!!,
-                            devices = state.filteredDevices,
-                            onToggle = {viewModel.onToggleDevice(it)},
-                            onValueChange = {device, level -> viewModel.onLevelChange(device,level)}
-                        )
-                    }
-                }
-
-                // --- LAYER 4: Room Selection Overlay ---
-                AnimatedVisibility(
-                    visible = isRoomOverlayVisible,
-                    enter = fadeIn() + slideInVertically { it / 2 },
-                    exit = fadeOut() + slideOutVertically { it / 2 }
-                ) {
-                    RoomSelectionOverlay(
-                        rooms = state.rooms,
-                        onRoomSelected = { room ->
-                            viewModel.onRoomSelected(room)
-                        },
-                        onClose = { isRoomOverlayVisible = false }
-                    )
-                }
-            }
-
-        }
-
-        if (state.showManualInput) {
-            ManualConnectionDialog(
-                onConnect = { ip -> viewModel.onManualIpEntered(ip) }
-            )
-        }
-    }
 }
 
 fun extractDeviceCategories(
