@@ -102,7 +102,7 @@ fun BottomNavItem(
             imageVector = icon,
             contentDescription = label,
             tint = contentColor,
-            modifier = Modifier.size(40.dp)
+            modifier = Modifier.size(32.dp)
         )
 
         Spacer(modifier = Modifier.height(6.dp))
@@ -111,7 +111,7 @@ fun BottomNavItem(
             text = label,
             color = contentColor,
             style = MaterialTheme.typography.labelSmall.copy(
-                fontSize = 12.sp,
+                fontSize = 10.sp,
                 fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
                 letterSpacing = 0.5.sp
             )

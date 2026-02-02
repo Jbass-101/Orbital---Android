@@ -126,6 +126,7 @@ class DashboardViewModel @Inject constructor(
             is DeviceState.Media -> s.copy(isOn = !s.isOn)
             // For dimmers, "Toggle" usually means 0% -> 100% or 100% -> 0%
             is DeviceState.Level -> if (s.value > 0) DeviceState.Level(0) else DeviceState.Level(100)
+            is DeviceState.Position -> if (s.position > 0) DeviceState.Position(0) else DeviceState.Position(100)
             else -> return // Other types (like Thermostats) might not have a simple "Toggle"
         }
 
@@ -139,6 +140,7 @@ class DashboardViewModel @Inject constructor(
         // Debounce logic could go here to prevent flooding the network
         val newState = when (device.state) {
             is DeviceState.Level -> DeviceState.Level(value.toInt())
+            is DeviceState.Position -> DeviceState.Position(value.toInt())
             is DeviceState.Media -> device.state.copy(volume = value.toInt())
             else -> return
         }

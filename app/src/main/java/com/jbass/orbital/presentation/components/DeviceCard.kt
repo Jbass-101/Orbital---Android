@@ -38,6 +38,7 @@ import com.jbass.orbital.domain.model.device.DeviceMetadata
 import com.jbass.orbital.domain.model.device.DeviceState
 import com.jbass.orbital.domain.model.device.DeviceType
 import com.jbass.orbital.domain.model.device.SmartDevice
+import com.jbass.orbital.presentation.util.getIcon
 import com.jbass.orbital.ui.theme.OrbitalTheme
 
 @Composable
@@ -89,7 +90,7 @@ fun DeviceCard(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(getIconForDevice(device.type)),
+                    imageVector = device.type.getIcon(),
                     contentDescription = null,
                     tint = if (isOn) accentColor else Color.White.copy(alpha = 0.6f),
                     modifier = Modifier.size(24.dp)
@@ -150,18 +151,6 @@ fun DeviceCard(
     }
 }
 
-
-// Helper: Map Backend Enum to UI Icon
-private fun getIconForDevice(type: DeviceType): Int {
-    return when (type) {
-        DeviceType.LIGHT, DeviceType.DIMMER, DeviceType.RGB_LIGHT -> R.drawable.lightbulb
-        DeviceType.THERMOSTAT, DeviceType.HVAC, DeviceType.FAN -> R.drawable.device_thermostat
-        DeviceType.TV, DeviceType.AVR, DeviceType.SPEAKER -> R.drawable.tv
-        DeviceType.DOOR_LOCK, DeviceType.GARAGE_DOOR -> R.drawable.lock
-        DeviceType.SMART_PLUG -> R.drawable.power
-        else -> R.drawable.devices_other
-    }
-}
 
 // Helper: Format status text
 private fun getStatusText(device: SmartDevice): String {

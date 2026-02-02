@@ -119,7 +119,7 @@ fun RoomCard(name: String, onClick: () -> Unit) {
 
         // --- BACKGROUND LAYER ---
         Image(
-            painter = painterResource(id = R.drawable.house_bg),
+            painter = painterResource(id = R.drawable.dashboard_bg),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()

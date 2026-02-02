@@ -20,10 +20,10 @@ import com.jbass.orbital.ui.theme.OrbitalTheme
 @Composable
 fun DashboardBackground(
     modifier: Modifier = Modifier,
-    bgRes : Int = R.drawable.house_bg,
+    bgRes : Int = R.drawable.dashboard_bg,
     content: @Composable BoxScope.() -> Unit,
 
-) {
+    ) {
 
     Box(
         modifier = modifier
@@ -36,7 +36,7 @@ fun DashboardBackground(
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
-                .blur(12.dp)
+                .blur(5.dp)
         )
 
         Box(

@@ -46,6 +46,8 @@ fun ControlListItem(
     val isOn = when (val s = device.state) {
         is DeviceState.OnOff -> s.isOn
         is DeviceState.Level -> s.value > 0
+        is DeviceState.Media -> s.isOn
+        is DeviceState.Position -> s.position > 0
         else -> false
     }
 
@@ -103,7 +105,20 @@ fun ControlListItem(
                     ),
                     modifier = Modifier.height(20.dp)
                 )
-            } else {
+            } else if (device.state is DeviceState.Position){
+                Spacer(modifier = Modifier.height(8.dp))
+                Slider(
+                    value = device.state.position.toFloat(),
+                    onValueChange = onValueChange,
+                    valueRange = 0f..100f,
+                    colors = SliderDefaults.colors(
+                        thumbColor = Color.White,
+                        activeTrackColor = MaterialTheme.colorScheme.primary,
+                        inactiveTrackColor = Color.White.copy(alpha = 0.1f)
+                    ),
+                    modifier = Modifier.height(20.dp)
+                )
+            }else {
                 Text(
                     text = if (isOn) "ACTIVE" else "INACTIVE",
                     color = if (isOn) MaterialTheme.colorScheme.primary else Color.White.copy(alpha = 0.3f),

@@ -16,6 +16,7 @@ import com.jbass.orbital.presentation.util.getIcon
 
 @Composable
 fun LiveStatusSection(devices: List<SmartDevice>) {
+    //@Todo move to viewmodel
     val activeLights = devices.count { it.type.category == DeviceCategory.LIGHTING && (it.state as? DeviceState.OnOff)?.isOn == true }
     val currentTemp = (devices.find { it.type.category == DeviceCategory.CLIMATE }?.state as? DeviceState.Temperature)?.current ?: 21
 
