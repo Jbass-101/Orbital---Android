@@ -43,6 +43,7 @@ import com.jbass.orbital.domain.model.device.SmartDevice
 import com.jbass.orbital.presentation.components.DeviceCard
 import com.jbass.orbital.presentation.components.BottomNavBar
 import com.jbass.orbital.presentation.components.OrbitalBackground
+import com.jbass.orbital.presentation.room.components.MediaHeroCard
 import com.jbass.orbital.presentation.room.components.SceneSelectionRow
 import com.jbass.orbital.presentation.util.MockData
 import com.jbass.orbital.ui.theme.OrbitalTheme
@@ -103,8 +104,9 @@ fun RoomDetailScreen(
                     modifier = Modifier.fillMaxSize()
                 ) {
 
-                    item(span = { GridItemSpan(2) }) {
-                        // Logic for scenes (ideally passed from ViewModel)
+                    //Scene Selection Column
+                    item(
+                        span = { GridItemSpan(2) }) {
                         val roomScenes = listOf("Relax", "Movie", "Read", "Bright")
                         var activeScene by remember { mutableStateOf<String?>(null) }
 
@@ -135,31 +137,38 @@ fun RoomDetailScreen(
                         }
                     }
 
-// Then your items(filteredDevices) logic follows...
-
                     items(
                         items = filteredDevices,
                         key = {it.id},
                         span = { device ->
                             val isWide = device.type.category == DeviceCategory.MEDIA ||
-                                    device.type.category == DeviceCategory.CLIMATE
+                                    device.type.category == DeviceCategory.CLIMATE ||
+                                    device.type.category == DeviceCategory.MEDIA
                             GridItemSpan(if (isWide) 2 else 1)
                         }
                     ) { device ->
-                        DeviceCard(
-                            device = device,
-                            onToggle = { onToggleDevice(device) },
-                            onValueChange = { f -> onLevelChange(device, f) },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .animateItem()
-                        )
+                        if (device.type.category == DeviceCategory.MEDIA || device.type.category == DeviceCategory.AUDIO) {
+                            MediaHeroCard(
+                                device = device,
+                                onToggle = { onToggleDevice(device) },
+                                onValueChange = { volume -> onLevelChange(device, volume) },
+                                modifier = Modifier.animateItem()
+                            )
+                        } else {
+                            DeviceCard(
+                                device = device,
+                                onToggle = { onToggleDevice(device) },
+                                onValueChange = { f -> onLevelChange(device, f) },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .animateItem()
+                            )
+
+                        }
                     }
                 }
 
             }
-
-            // LAYER 3: The Hovering Dock
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
