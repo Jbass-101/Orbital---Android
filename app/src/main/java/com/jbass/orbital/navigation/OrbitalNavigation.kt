@@ -29,6 +29,22 @@ fun OrbitalNavigation(
 
     val state by viewModel.uiState.collectAsState()
 
+    // --- GLOBAL CONNECTION GUARD ---
+    // If we lose connection while on the Dashboard or RoomDetail,
+    // kick the user back to the Loading/Discovery screen.
+    LaunchedEffect(state.connectionState) {
+        val currentRoute = navController.currentBackStackEntry?.destination?.route
+
+        if (state.connectionState !is ConnectionState.Connected &&
+            currentRoute != Screen.Loading.route) {
+
+            navController.navigate(Screen.Loading.route) {
+                // Clear the entire backstack so they can't "Back" into a dead session
+                popUpTo(0) { inclusive = true }
+            }
+        }
+    }
+
     NavHost(
         navController = navController,
         startDestination = Screen.Loading.route,
