@@ -104,6 +104,7 @@ fun DashboardContent(
                     BottomNavBar(
                         categories = DeviceCategory.entries,
                         selectedCategory = state.selectedCategory,
+                        showAllOption = false,
                         onFilter = { onFilter(it!!) }
                     )
                 }

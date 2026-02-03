@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AutoAwesome
+import androidx.compose.material.icons.rounded.AutoAwesomeMosaic
 import androidx.compose.material.icons.rounded.Blinds
 import androidx.compose.material.icons.rounded.Bolt
 import androidx.compose.material.icons.rounded.Lightbulb
@@ -48,22 +49,33 @@ import com.jbass.orbital.ui.theme.OrbitalTheme
 fun BottomNavBar(
     categories: List<DeviceCategory>,
     selectedCategory: DeviceCategory?,
+    showAllOption: Boolean = true,
     onFilter :(DeviceCategory?) -> Unit
 ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 24.dp) // Floating effect
+            .padding(horizontal = 20.dp, vertical = 24.dp)
             .clip(RoundedCornerShape(32.dp))
             .background(Color.White.copy(alpha = 0.08f))
             .border(1.dp, Color.White.copy(alpha = 0.12f), RoundedCornerShape(32.dp))
-            .padding(vertical = 12.dp, horizontal = 8.dp)
+            .padding(vertical = 12.dp, horizontal = 16.dp)
     ) {
         LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            if(showAllOption){
+
+                item {
+                    BottomNavItem(
+                        icon = Icons.Rounded.AutoAwesomeMosaic,
+                        label = "All",
+                        selected = selectedCategory == null,
+                        onClick = { onFilter(null) }
+                    )
+                }
+            }
             items(categories) { category ->
 
                 BottomNavItem(
@@ -152,6 +164,12 @@ fun PreviewBottomNavFull() {
                 .fillMaxWidth()
                 .background(Color(0xFF0A0A0A))
         ) {
+
+            BottomNavBar(
+                categories = DeviceCategory.entries,
+                selectedCategory = null,
+                onFilter = {}
+            )
             DeviceCategory.entries.forEach { category ->
 
                 BottomNavBar(
