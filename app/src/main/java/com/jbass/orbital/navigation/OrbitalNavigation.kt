@@ -1,5 +1,10 @@
 package com.jbass.orbital.navigation
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -35,7 +40,16 @@ fun OrbitalNavigation(
 
 
         // --- DASHBOARD DESTINATION ---
-        composable(Screen.Dashboard.route) {
+        composable(
+            Screen.Dashboard.route,enterTransition = {
+                fadeIn(animationSpec = tween(500)) +
+                        scaleIn(initialScale = 1.1f, animationSpec = tween(500))
+            },
+            exitTransition = {
+                fadeOut(animationSpec = tween(500)) +
+                        scaleOut(targetScale = 0.9f, animationSpec = tween(500))
+            }
+            ) {
             DashboardContent(
                 state = state,
                 onFilter = viewModel::onFilter,
@@ -54,7 +68,15 @@ fun OrbitalNavigation(
         // --- ROOM DETAIL DESTINATION ---
         composable(
             route = Screen.RoomDetail.route,
-            arguments = listOf(navArgument("roomId") { type = NavType.StringType })
+            arguments = listOf(navArgument("roomId") { type = NavType.StringType }),
+            enterTransition = {
+                fadeIn(animationSpec = tween(500)) +
+                        scaleIn(initialScale = 0.9f, animationSpec = tween(500))
+            },
+            exitTransition = {
+                fadeOut(animationSpec = tween(500)) +
+                        scaleOut(targetScale = 1.1f, animationSpec = tween(500))
+            }
         ) { backStackEntry ->
             val roomId = backStackEntry.arguments?.getString("roomId")
             val selectedRoom = state.rooms.find { it.id == roomId }
