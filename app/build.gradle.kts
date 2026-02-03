@@ -102,6 +102,7 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.turbine.test)
     testImplementation(libs.google.truth)
+    testImplementation(libs.logback.classic)
 
     //Ui Testing
     androidTestImplementation(libs.androidx.junit)

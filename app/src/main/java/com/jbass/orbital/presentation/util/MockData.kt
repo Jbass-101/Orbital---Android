@@ -51,7 +51,7 @@ object MockData {
             id = "lt-02",
             name = "Kitchen Pendants",
             type = DeviceType.LIGHT,
-            state = DeviceState.OnOff(false),
+            state = DeviceState.OnOff(true),
             zoneId = "Kitchen",
             metadata = Metadata
         ),
@@ -96,6 +96,7 @@ object MockData {
             metadata = Metadata
         )
     )
+    val zones = listOf(Zone("1", "Living Room"), Zone("2", "Kitchen"), Zone("3", "Cinema"))
 
     val DashboardState = DashboardUiState(
         devices = Devices,
@@ -108,9 +109,9 @@ object MockData {
 
     // Ensure this exists in your MockData util or similar
     val previewState = DashboardUiState(
-        devices = MockData.Devices,
-        weather = MockData.Weather,
-        rooms = listOf(Zone("1", "Living Room"), Zone("2", "Kitchen"), Zone("3", "Cinema")),
+        devices = Devices,
+        weather = Weather,
+        rooms = zones,
         categories = listOf(DeviceCategory.LIGHTING, DeviceCategory.CLIMATE, DeviceCategory.SECURITY),
         isLoading = false,
         connectionState = ConnectionState.Connected
