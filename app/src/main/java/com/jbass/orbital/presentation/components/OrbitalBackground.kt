@@ -1,4 +1,4 @@
-package com.jbass.orbital.presentation.dashboard.components
+package com.jbass.orbital.presentation.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,9 +18,9 @@ import com.jbass.orbital.R
 import com.jbass.orbital.ui.theme.OrbitalTheme
 
 @Composable
-fun DashboardBackground(
-    modifier: Modifier = Modifier,
+fun OrbitalBackground(
     bgRes : Int = R.drawable.dashboard_bg,
+    modifier: Modifier = Modifier,
     content: @Composable BoxScope.() -> Unit,
 
     ) {
@@ -58,7 +58,7 @@ fun DashboardBackground(
 @Composable
 fun previewBackground(){
     OrbitalTheme() {
-        DashboardBackground(
+        OrbitalBackground(
         ) { }
     }
 }

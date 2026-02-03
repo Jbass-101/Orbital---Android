@@ -1,4 +1,4 @@
-package com.jbass.orbital.presentation.dashboard.components
+package com.jbass.orbital.presentation.components
 
 
 import androidx.compose.foundation.background

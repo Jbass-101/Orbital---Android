@@ -27,9 +27,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jbass.orbital.domain.model.ConnectionState
 import com.jbass.orbital.domain.model.device.DeviceCategory
 import com.jbass.orbital.domain.model.device.SmartDevice
-import com.jbass.orbital.presentation.dashboard.components.BottomNavBar
+import com.jbass.orbital.presentation.components.BottomNavBar
 import com.jbass.orbital.presentation.dashboard.components.CategoryControlPanel
-import com.jbass.orbital.presentation.dashboard.components.DashboardBackground
+import com.jbass.orbital.presentation.components.OrbitalBackground
 import com.jbass.orbital.presentation.dashboard.components.DiscoveryRipple
 import com.jbass.orbital.presentation.dashboard.components.ManualConnectionDialog
 import com.jbass.orbital.presentation.dashboard.components.MinimalistDashboard
@@ -70,7 +70,7 @@ fun DashboardContent(
 
         } else {
             // 1. Root Container (The "Canvas")
-            DashboardBackground {
+            OrbitalBackground {
 
                 // --- LAYER 1: Scrolling Content ---
                 MinimalistDashboard(state)
