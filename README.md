@@ -1,4 +1,4 @@
-# [Orbital!](docs/images/orbital_splash.jpg "Orbital")
+# 🪐 Orbital
 ### *Next-Generation Smart Home Control Ecosystem*
 
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.9%2B-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)](https://kotlinlang.org/)
@@ -64,15 +64,15 @@ Orbital was engineered as a **low-latency control surface**, not just a collecti
 
 ### Prerequisites
 * **Android Studio** Ladybug (2024.2.1) or newer.
-* **Orbital Hub:** The companion [Ktor Backend Server](https://github.com/Jbass-101/Orbital-Backend) must be running on your local network to facilitate WebSocket communication.
+* **Orbital Hub:** The companion [Ktor Backend Server](https://github.com/your-repo/orbital-server) must be running on your local network to facilitate WebSocket communication.
 
 ### Installation
 1.  **Clone the Repository**
     ```bash
-    git clone [https://github.com/Jbass-101/Orbital---Android.git]
+    git clone [https://github.com/your-username/orbital-android.git](https://github.com/your-username/orbital-android.git)
     ```
 2.  **Initialize the Backend**
-    Follow the instructions in the [Server README](https://github.com/Jbass-101/Orbital-Backend) to boot the Ktor Hub.
+    Follow the instructions in the [Server README](https://github.com/your-repo/orbital-server) to boot the Ktor Hub.
 3.  **Build & Sync**
     Open the project in Android Studio and allow Gradle to sync.
 4.  **Run Tests**
