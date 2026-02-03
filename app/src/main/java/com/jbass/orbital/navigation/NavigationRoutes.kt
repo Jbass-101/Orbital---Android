@@ -1,4 +1,4 @@
-package com.jbass.orbital.presentation.navigation
+package com.jbass.orbital.navigation
 
 sealed class Screen(val route: String) {
     object Dashboard : Screen("dashboard")

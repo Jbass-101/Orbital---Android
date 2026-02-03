@@ -1,4 +1,4 @@
-package com.jbass.orbital.presentation.navigation
+package com.jbass.orbital.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState

@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.jbass.orbital.presentation.navigation.OrbitalNavigation
+import com.jbass.orbital.navigation.OrbitalNavigation
 import com.jbass.orbital.ui.theme.OrbitalTheme
 import dagger.hilt.android.AndroidEntryPoint
 
