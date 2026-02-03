@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -14,8 +15,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.jbass.orbital.domain.model.ConnectionState
 import com.jbass.orbital.presentation.dashboard.DashboardContent
 import com.jbass.orbital.presentation.dashboard.DashboardViewModel
+import com.jbass.orbital.presentation.loading.DiscoveryRipple
 import com.jbass.orbital.presentation.room.RoomDetailScreen
 
 @Composable
@@ -28,15 +31,27 @@ fun OrbitalNavigation(
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Dashboard.route,
+        startDestination = Screen.Loading.route,
     ) {
+        // --- 1. DISCOVERY / LOADING SCREEN ---
+        composable(Screen.Loading.route) {
+            // Navigation Effect: Jump to Dashboard when connected
+            LaunchedEffect(state.connectionState) {
+                if (state.connectionState is ConnectionState.Connected) {
+                    navController.navigate(Screen.Dashboard.route) {
+                        popUpTo(Screen.Loading.route) { inclusive = true }
+                    }
+                }
+            }
 
-
-//         Optional: Custom transitions for that Savant luxury feel
-//        enterTransition = { fadeIn(animationSpec = tween(400)) },
-//        exitTransition = { fadeOut(animationSpec = tween(400)) },
-//        modifier = Modifier,
-//        route = Screen.Dashboard.route
+            DiscoveryRipple(
+                statusText = when (state.connectionState) {
+                    is ConnectionState.Reconnecting -> "Reconnecting..."
+                    else -> "Scanning Local Network..."
+                },
+                showManualInput = { viewModel.showManualInput() }
+            )
+        }
 
 
         // --- DASHBOARD DESTINATION ---
@@ -59,9 +74,7 @@ fun OrbitalNavigation(
                     // Navigate to room detail when a room is picked
                     navController.navigate(Screen.RoomDetail.createRoute(roomId))
                 },
-                onManualIpEntered = viewModel::onManualIpEntered,
-                onCloseCategory = viewModel::onCloseCategoryControl,
-                onShowManualInput = viewModel::showManualInput,
+                onCloseCategory = viewModel::onCloseCategoryControl
             )
         }
 

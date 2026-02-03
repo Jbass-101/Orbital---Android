@@ -1,4 +1,4 @@
-package com.jbass.orbital.presentation.dashboard.components
+package com.jbass.orbital.presentation.loading
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

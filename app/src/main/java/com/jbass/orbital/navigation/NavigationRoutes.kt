@@ -1,6 +1,8 @@
 package com.jbass.orbital.navigation
 
 sealed class Screen(val route: String) {
+
+    object Loading : Screen("loading")
     object Dashboard : Screen("dashboard")
     object RoomDetail : Screen("room_detail/{roomId}") {
         fun createRoute(roomId: String) = "room_detail/$roomId"

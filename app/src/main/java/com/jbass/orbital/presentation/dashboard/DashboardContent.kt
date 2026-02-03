@@ -7,12 +7,19 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,14 +31,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.jbass.orbital.domain.model.ConnectionState
 import com.jbass.orbital.domain.model.device.DeviceCategory
 import com.jbass.orbital.domain.model.device.SmartDevice
 import com.jbass.orbital.presentation.components.BottomNavBar
-import com.jbass.orbital.presentation.dashboard.components.CategoryControlPanel
 import com.jbass.orbital.presentation.components.OrbitalBackground
-import com.jbass.orbital.presentation.dashboard.components.DiscoveryRipple
-import com.jbass.orbital.presentation.dashboard.components.ManualConnectionDialog
+import com.jbass.orbital.presentation.dashboard.components.CategoryControlPanel
 import com.jbass.orbital.presentation.dashboard.components.MinimalistDashboard
 import com.jbass.orbital.presentation.dashboard.components.RoomSelectionOverlay
 import com.jbass.orbital.presentation.dashboard.components.TopTabs
@@ -46,29 +52,12 @@ fun DashboardContent(
     onToggleDevice: (SmartDevice) -> Unit,
     onLevelChange: (SmartDevice, Float) -> Unit,
     onRoomSelected:(String) -> Unit,
-    onManualIpEntered: (String) -> Unit,
     onCloseCategory: () -> Unit,
-    onShowManualInput: () -> Unit,
 ){
 
     var isRoomOverlayVisible by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
 
-    Box(modifier = Modifier
-        .fillMaxSize()){
-
-
-        // Show loading if connecting and no devices yet
-        if (state.isLoading && state.devices.isEmpty()) {
-            DiscoveryRipple(
-                statusText = when (state.connectionState) {
-                    is ConnectionState.Reconnecting -> "Reconnecting..."
-                    else -> "Scanning Local Network..."
-                },
-                showManualInput = { onShowManualInput() }
-            )
-
-        } else {
             // 1. Root Container (The "Canvas")
             OrbitalBackground {
 
@@ -141,15 +130,6 @@ fun DashboardContent(
                     )
                 }
             }
-
-        }
-
-        if (state.showManualInput) {
-            ManualConnectionDialog(
-                onConnect = { ip -> onManualIpEntered(ip) }
-            )
-        }
-    }
 }
 
 @Preview(name = "1. Dashboard Glance", group = "Main", showBackground = true, backgroundColor = 0xFF0A0A0A)
@@ -162,9 +142,7 @@ fun PreviewDashboardGlance() {
             onToggleDevice = {},
             onLevelChange = { _, _ -> },
             onRoomSelected = {},
-            onManualIpEntered = {},
-            onCloseCategory = {},
-            onShowManualInput = {},
+            onCloseCategory = {}
         )
     }
 }
@@ -183,9 +161,7 @@ fun PreviewDiscoveryPhase() {
             onToggleDevice = {},
             onLevelChange = { _, _ -> },
             onRoomSelected = {},
-            onManualIpEntered = {},
-            onCloseCategory = {},
-            onShowManualInput = {},
+            onCloseCategory = {}
         )
     }
 }
@@ -203,5 +179,41 @@ fun PreviewLightingPanel() {
                 onValueChange = { _, _ -> }
             )
         }
+    }
+}
+
+@Composable
+fun ManualConnectionDialog(
+    onConnect: (String) -> Unit
+) {
+    var ip by remember { mutableStateOf("192.168.1.") }
+
+    AlertDialog(
+        onDismissRequest = {}, // Force user to enter IP
+        title = { Text("Server Not Found") },
+        text = {
+            Column {
+                Text("Could not find Orbital Server automatically. Please enter the IP address.")
+                Spacer(Modifier.Companion.height(8.dp))
+                OutlinedTextField(
+                    value = ip,
+                    onValueChange = { ip = it },
+                    label = { Text("Server IP") },
+                    singleLine = true
+                )
+            }
+        },
+        confirmButton = {
+            Button(onClick = { onConnect(ip) }) {
+                Text("Connect")
+            }
+        }
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun previewManualConnection(){
+    OrbitalTheme() {
     }
 }
