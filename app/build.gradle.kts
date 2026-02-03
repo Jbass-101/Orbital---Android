@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.Kapt
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -76,17 +74,9 @@ dependencies {
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization)
 
-    testImplementation(libs.ktor.server.test)
-    testImplementation(libs.ktor.server.websockets)
-    testImplementation(libs.ktor.server.content.negotiation)
-    testImplementation(libs.ktor.serialization)
-    testImplementation(libs.ktor.client.websockets)
-    testImplementation(libs.ktor.client.content.negotiation)
-
     //Coroutines
     implementation(libs.kotlinx.coroutines)
 
-    testImplementation(libs.kotlinx.coroutines.test)
 
     //Hilt-Dagger
     implementation(libs.hilt.android)
@@ -106,12 +96,29 @@ dependencies {
     //Json Serialization
     implementation(libs.json.serialization)
 
-    //Android Default test
+    //Unit Test
     testImplementation(libs.junit)
+    testImplementation(libs.mock.test)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.turbine.test)
+    testImplementation(libs.google.truth)
+
+    //Ui Testing
     androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.kotlin.faker)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    //Default Unit Test
+    testImplementation(libs.ktor.server.test)
+    testImplementation(libs.ktor.server.websockets)
+    testImplementation(libs.ktor.server.content.negotiation)
+    testImplementation(libs.ktor.serialization)
+    testImplementation(libs.ktor.client.websockets)
+    testImplementation(libs.ktor.client.content.negotiation)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+
+    //Default Android test
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
 }

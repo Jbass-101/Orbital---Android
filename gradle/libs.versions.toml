@@ -16,7 +16,10 @@ kotlin-serialization = "2.3.0"
 json-serialization = "1.10.0"
 hilt-navigation-compose = "1.2.0"
 navigation-compose = "2.9.7"
-compose-material = "1.10.1"
+mock-test="1.13.5"
+turbine="1.1.0"
+truth="1.1.4"
+kotlin-faker="1.15.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -36,6 +39,10 @@ androidx-compose-material3 = { group = "androidx.compose.material3", name = "mat
 androidx-compose-icons = {group = "androidx.compose.material", name = "material-icons-core"}
 androidx-compose-icons-extended = {group = "androidx.compose.material", name = "material-icons-extended"}
 androidx-navigation-compose = {group ="androidx.navigation", name = "navigation-compose", version.ref="navigation-compose"}
+mock-test = {group ="io.mockk", name="mockk", version.ref="mock-test"}
+turbine-test = {group ="app.cash.turbine", name="turbine", version.ref="turbine"}
+google-truth = {group ="com.google.truth", name="truth", version.ref="truth"}
+kotlin-faker = {group ="io.github.serpro69", name="kotlin-faker", version.ref="kotlin-faker"}
 
 
 
