@@ -14,8 +14,13 @@ kotlin-ksp ="2.3.3"
 hilt-dagger = "2.58"
 kotlin-serialization = "2.3.0"
 json-serialization = "1.10.0"
-navigation-compose = "1.2.0"
-compose-material = "1.10.1"
+hilt-navigation-compose = "1.2.0"
+navigation-compose = "2.9.7"
+mock-test="1.14.9"
+turbine="1.2.1"
+truth="1.4.5"
+kotlin-faker="1.16.0"
+logback-classic="1.5.27"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -33,6 +38,14 @@ androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-icons = {group = "androidx.compose.material", name = "material-icons-core"}
+androidx-compose-icons-extended = {group = "androidx.compose.material", name = "material-icons-extended"}
+androidx-navigation-compose = {group ="androidx.navigation", name = "navigation-compose", version.ref="navigation-compose"}
+mock-test = {group ="io.mockk", name="mockk", version.ref="mock-test"}
+turbine-test = {group ="app.cash.turbine", name="turbine", version.ref="turbine"}
+google-truth = {group ="com.google.truth", name="truth", version.ref="truth"}
+kotlin-faker = {group ="io.github.serpro69", name="kotlin-faker", version.ref="kotlin-faker"}
+logback-classic = {group = "ch.qos.logback", name="logback-classic" ,version.ref="logback-classic"}
+
 
 
 ##Ktor
@@ -59,7 +72,7 @@ hilt-compiler = {group ="com.google.dagger", name = "hilt-compiler", version.ref
 hilt-android-testing = {group ="com.google.dagger", name = "hilt-android-testing", version.ref = "hilt-dagger"}
 
 #Hilt-Navigation-Compose : Viewmodels
-navigation-compose = {group = "androidx.hilt", name="hilt-navigation-compose", version.ref ="navigation-compose" }
+navigation-compose = {group = "androidx.hilt", name="hilt-navigation-compose", version.ref ="hilt-navigation-compose" }
 
 #Json Serialization
 json-serialization = {group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref="json-serialization"}

@@ -1,11 +1,22 @@
 package com.jbass.orbital.presentation.dashboard
 
 import com.jbass.orbital.domain.model.ConnectionState
-import com.jbass.orbital.domain.model.SmartDevice
+import com.jbass.orbital.domain.model.device.DeviceCategory
+import com.jbass.orbital.domain.model.device.SmartDevice
+import com.jbass.orbital.domain.model.zone.Zone
+import com.jbass.orbital.domain.model.weather.CurrentWeather
 
 
 data class DashboardUiState(
     val devices: List<SmartDevice> = emptyList(),
+    val rooms: List<Zone> = emptyList(),
+    val selectedRoomId: String? = null,
+    val filteredDevices: List<SmartDevice> = emptyList(),
+    val weather: CurrentWeather? = null,
+    val categories : List<DeviceCategory> = emptyList(),
+    val selectedCategory: DeviceCategory? = null,
+    val showManualInput: Boolean = false,
+    val serverUrl: String? = null,
     val connectionState: ConnectionState = ConnectionState.Disconnected,
     val isLoading: Boolean = true
 )

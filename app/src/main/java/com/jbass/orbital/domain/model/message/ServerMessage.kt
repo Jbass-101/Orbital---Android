@@ -1,6 +1,9 @@
-package com.jbass.orbital.domain.model
+package com.jbass.orbital.domain.model.message
 
 
+import com.jbass.orbital.domain.model.device.SmartDevice
+import com.jbass.orbital.domain.model.weather.CurrentWeather
+import com.jbass.orbital.domain.model.zone.Zone
 import kotlinx.serialization.Serializable
 
 /**
@@ -28,13 +31,21 @@ sealed class ServerMessage {
      */
     @Serializable
     data class FullStateUpdate(
-        val devices: List<SmartDevice>
+        val weather: CurrentWeather,
+        val devices: List<SmartDevice>,
+        val zones: List<Zone>
     ) : ServerMessage()
 
 
     @Serializable
     data class DeltaStateUpdate(
         val devices: List<SmartDevice>
+    ) : ServerMessage()
+
+
+    @Serializable
+    data class DeltaWeatherUpdate(
+        val weather: CurrentWeather,
     ) : ServerMessage()
 
     /**

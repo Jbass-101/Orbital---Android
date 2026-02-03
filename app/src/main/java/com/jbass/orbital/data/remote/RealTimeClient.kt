@@ -1,11 +1,13 @@
 package com.jbass.orbital.data.remote
 
 import android.util.Log
-import com.jbass.orbital.domain.model.ClientMessage
+import com.jbass.orbital.domain.model.message.ClientMessage
 import com.jbass.orbital.domain.model.ConnectionState
-import com.jbass.orbital.domain.model.ServerMessage
-import com.jbass.orbital.domain.model.SmartDevice
+import com.jbass.orbital.domain.model.message.ServerMessage
+import com.jbass.orbital.domain.model.device.SmartDevice
 import com.jbass.orbital.domain.model.UiError
+import com.jbass.orbital.domain.model.zone.Zone
+import com.jbass.orbital.domain.model.weather.CurrentWeather
 import io.ktor.client.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.websocket.*
@@ -26,7 +28,7 @@ import kotlin.math.min
 class RealTimeClient(
     private val client: HttpClient,
     private val scope: CoroutineScope
-) {
+)  {
 
     /* ----------------------------
      * UI State
@@ -36,6 +38,18 @@ class RealTimeClient(
     //The Output: A hot stream of the current device list.
     private val _cachedDeviceState = MutableStateFlow<List<SmartDevice>>(emptyList())
     val deviceState: StateFlow<List<SmartDevice>> = _cachedDeviceState.asStateFlow()
+
+    private val _weatherState =
+        MutableStateFlow<CurrentWeather?>(null)
+
+    val weatherState: StateFlow<CurrentWeather?> =
+        _weatherState.asStateFlow()
+
+    private val _zoneState =
+        MutableStateFlow<List<Zone>>(emptyList())
+
+    val zoneState: StateFlow<List<Zone>> = _zoneState.asStateFlow()
+
 
     //Connection Status
     private val _connectionStatus = MutableStateFlow<ConnectionState>(ConnectionState.Disconnected)
@@ -190,6 +204,10 @@ class RealTimeClient(
                     }
                     _cachedDeviceState.value = _deviceCache.values.toList()
 
+                    _weatherState.value = message.weather
+
+                    _zoneState.value = message.zones
+
                     Log.v("RealTimeClient", "State updated: ${message.devices.size} devices")
                 }
                 is ServerMessage.DeltaStateUpdate -> {
@@ -198,6 +216,10 @@ class RealTimeClient(
                     }
 
                     _cachedDeviceState.value = _deviceCache.values.toList()
+
+                }
+                is ServerMessage.DeltaWeatherUpdate -> {
+                    _weatherState.value = message.weather
 
                 }
                 is ServerMessage.CommandAck -> {

@@ -1,19 +1,32 @@
 package com.jbass.orbital.presentation.components
 
-
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.VolumeDown
+import androidx.compose.material.icons.automirrored.rounded.VolumeUp
+import androidx.compose.material.icons.rounded.Pause
+import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material.icons.rounded.VolumeDown
+import androidx.compose.material.icons.rounded.VolumeUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
@@ -21,6 +34,7 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,11 +43,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.jbass.orbital.R
-import com.jbass.orbital.domain.model.DeviceMetadata
-import com.jbass.orbital.domain.model.DeviceState
-import com.jbass.orbital.domain.model.DeviceType
-import com.jbass.orbital.domain.model.SmartDevice
+import com.jbass.orbital.domain.model.device.DeviceCategory
+import com.jbass.orbital.domain.model.device.DeviceMetadata
+import com.jbass.orbital.domain.model.device.DeviceState
+import com.jbass.orbital.domain.model.device.DeviceType
+import com.jbass.orbital.domain.model.device.SmartDevice
+import com.jbass.orbital.presentation.util.MockData
+import com.jbass.orbital.presentation.util.getIcon
 import com.jbass.orbital.ui.theme.OrbitalTheme
 
 @Composable
@@ -43,123 +61,124 @@ fun DeviceCard(
     onValueChange: (Float) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isActive = when (val s = device.state) {
+    val isMedia = device.type.category == DeviceCategory.MEDIA
+    val isOn = when (val s = device.state) {
         is DeviceState.OnOff -> s.isOn
         is DeviceState.Level -> s.value > 0
         is DeviceState.Media -> s.isOn
         else -> false
     }
 
-    val cardColor by animateColorAsState(
-        targetValue = if (isActive)
-            MaterialTheme.colorScheme.primaryContainer
-        else
-            MaterialTheme.colorScheme.surface,
-        label = "cardBg"
-    )
+    val accentColor = MaterialTheme.colorScheme.primary
+    val glassAlpha = if (isOn) 0.15f else 0.08f
 
-    val contentColor by animateColorAsState(
-        targetValue = if (isActive)
-            MaterialTheme.colorScheme.onPrimaryContainer
-        else
-            MaterialTheme.colorScheme.onSurface,
-        label = "contentColor"
-    )
-
-    Column(
+    // We remove aspectRatio(1f) from the internal modifier so the parent Grid can decide the shape
+    Box(
         modifier = modifier
-            .aspectRatio(1f)
-            .clip(RoundedCornerShape(28.dp))
-            .background(cardColor)
-            .clickable(onClick = onToggle)
-            .padding(18.dp),
-        verticalArrangement = Arrangement.SpaceBetween
+            .clip(RoundedCornerShape(32.dp))
+            .background(Color.White.copy(alpha = glassAlpha))
+            .border(
+                1.dp,
+                if (isOn) accentColor.copy(alpha = 0.4f) else Color.White.copy(alpha = 0.12f),
+                RoundedCornerShape(32.dp)
+            )
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) { onToggle() }
+            .padding(20.dp)
     ) {
-
-        // ─── Header ───────────────────────────────
-        Box(
-            modifier = Modifier
-                .size(44.dp)
-                .clip(CircleShape)
-                .background(
-                    if (isActive)
-                        MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
-                    else
-                        MaterialTheme.colorScheme.surfaceVariant
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(getIconForDevice(device.type)),
-                contentDescription = null,
-                tint = if (isActive)
-                    MaterialTheme.colorScheme.primary
-                else
-                    MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(22.dp)
-            )
+        if (isMedia && device.state is DeviceState.Media) {
+            MediaHeroContent(device.name, device.state, onValueChange, accentColor)
+        } else {
+            StandardTileContent(device, isOn, onValueChange, accentColor)
         }
+    }
+}
 
-        // ─── Middle Content ───────────────────────
-        when (val state = device.state) {
-            is DeviceState.Level -> {
-                Slider(
-                    value = state.value.toFloat(),
-                    onValueChange = onValueChange,
-                    valueRange = 0f..100f,
-                    colors = SliderDefaults.colors(
-                        thumbColor = MaterialTheme.colorScheme.primary,
-                        activeTrackColor = MaterialTheme.colorScheme.primary,
-                        inactiveTrackColor = MaterialTheme.colorScheme.surfaceVariant
-                    )
+@Composable
+private fun MediaHeroContent(
+    name: String,
+    state: DeviceState.Media,
+    onVolumeChange: (Float) -> Unit,
+    accentColor: Color
+) {
+    Column(verticalArrangement = Arrangement.SpaceBetween) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(
+                modifier = Modifier.size(42.dp).background(Color.White.copy(alpha = 0.05f), CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = if (state.isOn) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
+                    contentDescription = null,
+                    tint = if (state.isOn) accentColor else Color.White.copy(alpha = 0.6f)
                 )
             }
-
-            is DeviceState.Temperature -> {
+            Spacer(Modifier.width(16.dp))
+            Column {
+                Text(name, color = Color.White, style = MaterialTheme.typography.titleMedium)
                 Text(
-                    text = "${state.current}°C",
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = contentColor
+                    text = if (state.isOn) "PLAYING: ${state.source}" else "STANDBY",
+                    color = Color.White.copy(alpha = 0.5f),
+                    style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 1.sp)
                 )
             }
-
-            else -> Spacer(Modifier.height(12.dp))
         }
 
-        // ─── Footer ───────────────────────────────
+        Spacer(Modifier.height(20.dp))
+
+        // Volume Slider
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Rounded.VolumeDown, null, tint = Color.White.copy(alpha = 0.4f), modifier = Modifier.size(16.dp))
+            Slider(
+                value = state.volume.toFloat(),
+                onValueChange = onVolumeChange,
+                valueRange = 0f..100f,
+                modifier = Modifier.weight(1f).padding(horizontal = 8.dp),
+                colors = SliderDefaults.colors(activeTrackColor = accentColor, thumbColor = Color.White)
+            )
+            Icon(Icons.Rounded.VolumeUp, null, tint = Color.White.copy(alpha = 0.4f), modifier = Modifier.size(16.dp))
+        }
+    }
+}
+
+@Composable
+private fun StandardTileContent(
+    device: SmartDevice,
+    isOn: Boolean,
+    onValueChange: (Float) -> Unit,
+    accentColor: Color
+) {
+    Column(verticalArrangement = Arrangement.SpaceBetween, modifier = Modifier.heightIn(min = 140.dp)) {
+        Icon(
+            imageVector = device.type.getIcon(),
+            contentDescription = null,
+            tint = if (isOn) accentColor else Color.White.copy(alpha = 0.6f),
+            modifier = Modifier.size(28.dp)
+        )
+
         Column {
-            Text(
-                text = device.name,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = contentColor,
-                maxLines = 1
-            )
+            when (val state = device.state) {
+                is DeviceState.Temperature -> {
+                    Text("${state.current}°", style = MaterialTheme.typography.displaySmall, fontWeight = FontWeight.ExtraLight, color = Color.White)
+                }
+                is DeviceState.Level -> {
+                    Slider(
+                        value = state.value.toFloat(),
+                        onValueChange = onValueChange,
+                        colors = SliderDefaults.colors(activeTrackColor = accentColor, thumbColor = Color.White)
+                    )
+                }
 
-            Spacer(Modifier.height(2.dp))
-
-            Text(
-                text = getStatusText(device),
-                style = MaterialTheme.typography.labelMedium,
-                color = contentColor.copy(alpha = 0.7f)
-            )
+                else -> {}
+            }
+            Text(device.name, color = Color.White, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Medium)
+            Text(getStatusText(device).uppercase(), color = Color.White.copy(alpha = 0.5f), style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 1.sp))
         }
     }
 }
 
-
-// Helper: Map Backend Enum to UI Icon
-private fun getIconForDevice(type: DeviceType): Int {
-    return when (type) {
-        DeviceType.LIGHT, DeviceType.DIMMER, DeviceType.RGB_LIGHT -> R.drawable.lightbulb
-        DeviceType.THERMOSTAT, DeviceType.HVAC, DeviceType.FAN -> R.drawable.device_thermostat
-        DeviceType.TV, DeviceType.AVR, DeviceType.SPEAKER -> R.drawable.tv
-        DeviceType.DOOR_LOCK, DeviceType.GARAGE_DOOR -> R.drawable.lock
-        DeviceType.SMART_PLUG -> R.drawable.power
-        else -> R.drawable.devices_other
-    }
-}
 
 // Helper: Format status text
 private fun getStatusText(device: SmartDevice): String {
@@ -173,28 +192,27 @@ private fun getStatusText(device: SmartDevice): String {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(name = "Light Tile", backgroundColor = 0xFF0A0A0A, showBackground = true)
 @Composable
-fun DeviceCardPreview (){
-    OrbitalTheme() {
-        DeviceCard(
-            SmartDevice(
-                id = "light-1",
-                name = "Test Light",
-                type = DeviceType.DIMMER,
-                state = DeviceState.OnOff(true),
-                zoneId = "z1",
-                metadata = DeviceMetadata(
-                    "Test",
-                    "Model",
-                    "1.0",
-                    isReachable = true,
-                    lastSeenEpochMs = 0
+fun PreviewSavantLight() {
+    OrbitalTheme(darkTheme = true) {
+        Column(Modifier
+            .fillMaxSize()) {
+            MockData.Devices.forEach { device ->
+                DeviceCard(
+                    device = device,
+                    onToggle = {},
+                    onValueChange = {},
                 )
-            ),
-            {},
-            {}
-        )
+            }
+        }
     }
-
 }
+private fun mockDevice(type: DeviceType, state: DeviceState, name: String) = SmartDevice(
+    id = "id", name = name, type = type, state = state, zoneId = "z1",
+    metadata = DeviceMetadata(
+        "T", "M", "1", "192.168.0.1", "00:00:",
+        isReachable = true,
+        lastSeenEpochMs = 56000
+    )
+)

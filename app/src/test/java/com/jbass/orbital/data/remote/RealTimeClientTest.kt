@@ -1,8 +1,8 @@
 package com.jbass.orbital.data.remote
 
 
-import com.jbass.orbital.domain.model.DeviceState
-import com.jbass.orbital.domain.model.ServerMessage
+import com.jbass.orbital.domain.model.device.DeviceState
+import com.jbass.orbital.domain.model.message.ServerMessage
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.server.application.install
 import io.ktor.server.routing.routing
