@@ -14,7 +14,8 @@ kotlin-ksp ="2.3.3"
 hilt-dagger = "2.58"
 kotlin-serialization = "2.3.0"
 json-serialization = "1.10.0"
-navigation-compose = "1.2.0"
+hilt-navigation-compose = "1.2.0"
+navigation-compose = "2.9.7"
 compose-material = "1.10.1"
 
 [libraries]
@@ -34,6 +35,8 @@ androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-te
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-icons = {group = "androidx.compose.material", name = "material-icons-core"}
 androidx-compose-icons-extended = {group = "androidx.compose.material", name = "material-icons-extended"}
+androidx-navigation-compose = {group ="androidx.navigation", name = "navigation-compose", version.ref="navigation-compose"}
+
 
 
 
@@ -61,7 +64,7 @@ hilt-compiler = {group ="com.google.dagger", name = "hilt-compiler", version.ref
 hilt-android-testing = {group ="com.google.dagger", name = "hilt-android-testing", version.ref = "hilt-dagger"}
 
 #Hilt-Navigation-Compose : Viewmodels
-navigation-compose = {group = "androidx.hilt", name="hilt-navigation-compose", version.ref ="navigation-compose" }
+navigation-compose = {group = "androidx.hilt", name="hilt-navigation-compose", version.ref ="hilt-navigation-compose" }
 
 #Json Serialization
 json-serialization = {group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref="json-serialization"}

@@ -65,6 +65,9 @@ dependencies {
     implementation(libs.androidx.compose.icons)
     implementation(libs.androidx.compose.icons.extended)
 
+    //Navigation-Compose
+    implementation(libs.androidx.navigation.compose)
+
      //Ktor
     implementation(platform(libs.ktor.bom))
     implementation(libs.ktor.client.core)
